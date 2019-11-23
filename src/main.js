@@ -1,5 +1,3 @@
-'use strict';
-
 const EVENT_COUNT = 3;
 
 const tripInfoElement = document.querySelector(`.trip-info`);
