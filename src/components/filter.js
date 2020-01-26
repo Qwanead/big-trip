@@ -1,25 +1,28 @@
-import {formatCase, convertArrayToString} from '../utils';
+import {formatCase, generateTemplates} from '../utils';
 
-const getFiltersList = (filters) => {
-
-  const getFiltersListTemplate = (filter) => {
-    return (`
-      <div class="trip-filters__filter">
-        <input id="filter-${filter.title}" class="trip-filters__filter-input  visually-hidden" type="radio" name="trip-filter" value="${filter.title}" ${filter.isChecked ? `checked` : ``}>
-        <label class="trip-filters__filter-label" for="filter-${filter.title}">${formatCase(filter.title)}</label>
-      </div>
-    `);
-  };
-
-  return convertArrayToString(filters, getFiltersListTemplate);
+const getFilterTemplate = ({title, isChecked}) => {
+  return (`
+    <div class="trip-filters__filter">
+      <input
+        id="filter-${title}"
+        class="trip-filters__filter-input visually-hidden"
+        type="radio"
+        name="trip-filter"
+        value="${title}"
+        ${isChecked ? `checked` : ``}
+      >
+      <label class="trip-filters__filter-label" for="filter-${title}">${formatCase(title)}</label>
+    </div>
+  `);
 };
 
+const getFilterTemplates = generateTemplates(getFilterTemplate);
+
 const createFilterTemplate = (filters) => {
-  const filterList = getFiltersList(filters);
 
   return (`
     <form class="trip-filters" action="#" method="get">
-      ${filterList}
+      ${getFilterTemplates(filters)}
 
       <button class="visually-hidden" type="submit">Accept filter</button>
     </form>

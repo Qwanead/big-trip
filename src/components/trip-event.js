@@ -1,4 +1,4 @@
-import {formatCase, formatNumber} from '../utils';
+import {formatCase, formatNumber, generateTemplates} from '../utils';
 import {POINT_ACTIVITYS} from '../const';
 
 const MS_IN_MINUTE = 1000 * 60;
@@ -66,6 +66,16 @@ const calculateDiffDate = (beginDate, endDate) => {
   return `${day.string} ${hour.string} ${minute.string}`;
 };
 
+const getOfferTemplate = ({title, price}) => {
+  return `
+    <li class="event__offer">
+      <span class="event__offer-title">${title}</span>
+      &plus;
+      &euro;&nbsp;<span class="event__offer-price">${price}</span>
+    </li>
+  `;
+};
+
 const getOffersListTemplate = (offersChecked) => {
   let offersCheckedShort = [];
 
@@ -75,17 +85,9 @@ const getOffersListTemplate = (offersChecked) => {
     offersCheckedShort = offersChecked;
   }
 
-  const offersTemplates = offersCheckedShort.map((it) => {
-    return `
-      <li class="event__offer">
-        <span class="event__offer-title">${it.title}</span>
-        &plus;
-        &euro;&nbsp;<span class="event__offer-price">${it.price}</span>
-      </li>
-    `;
-  });
+  const getOffersTemplates = generateTemplates(getOfferTemplate);
 
-  return offersTemplates.join(``);
+  return getOffersTemplates(offersCheckedShort);
 };
 
 const isActivitys = (eventType) => POINT_ACTIVITYS.some((it) => it === eventType);
