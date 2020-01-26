@@ -1,3 +1,5 @@
+const NUMBER_LENGTH = 2;
+
 const getRandomInteger = (min, max) => {
   let rand = min + Math.random() * (max + 1 - min);
   return Math.floor(rand);
@@ -9,26 +11,11 @@ const getRandomArrayItem = (array) => {
   return array[randomIndex];
 };
 
-const formatCase = (str) => {
-  if (!str) {
-    return str;
-  }
+const formatCase = (str) => str[0].toUpperCase() + str.slice(1);
 
-  return str[0].toUpperCase() + str.slice(1);
-};
+const formatNumber = (number) => number.toString().padStart(NUMBER_LENGTH, `0`);
 
-const calculateTotalPrice = (basePrice, offers) => {
-  const offersChecked = offers.filter((it) => it.isChecked);
+const convertArrayToString = (arr, cb = (it) => it) =>
+  arr.reduce((result, it) => result + cb(it), ``);
 
-  let offersPrice = 0;
-
-  if (offersChecked) {
-    offersChecked.forEach((it) => {
-      offersPrice += it.price;
-    });
-  }
-
-  return offersPrice + basePrice;
-};
-
-export {getRandomInteger, getRandomArrayItem, formatCase, calculateTotalPrice};
+export {getRandomInteger, getRandomArrayItem, formatCase, formatNumber, convertArrayToString};

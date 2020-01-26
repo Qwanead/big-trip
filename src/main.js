@@ -8,6 +8,8 @@ import {createTripEventTemplate} from './components/trip-event';
 import {getPointMocks} from './mocks/point';
 import {MENU_ITEMS} from './mocks/menu';
 import {FILTERS} from './mocks/filters';
+import {convertArrayToString} from './utils';
+
 
 const EVENT_COUNT = 4;
 
@@ -30,7 +32,4 @@ render(tripEventsElement, createTripListTemplate());
 
 const eventsListElement = tripEventsElement.querySelector(`.trip-events__list`);
 
-render(eventsListElement, points
-  .slice(1)
-  .map((it) => createTripEventTemplate(it))
-  .join(`\n`));
+render(eventsListElement, convertArrayToString(points.slice(1), createTripEventTemplate));

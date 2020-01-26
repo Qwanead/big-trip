@@ -1,70 +1,64 @@
 import {POINT_TYPES, POINT_ACTIVITYS, DESTINATIONS} from '../const';
-import {formatCase, calculateTotalPrice} from '../utils';
+import {formatCase, formatNumber, convertArrayToString} from '../utils';
+
+const getEventTypeList = (types) => {
+  const getEventTypeTemplate = (eventType) => {
+    return (`
+      <div class="event__type-item">
+        <input id="event-type-${eventType}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${eventType}">
+        <label class="event__type-label  event__type-label--${eventType}" for="event-type-${eventType}-1">${formatCase(eventType)}</label>
+      </div>
+    `);
+  };
+
+  return convertArrayToString(types, getEventTypeTemplate);
+};
+
+const getOptionsList = (options) => {
+  const getOptionTemplate = (optionValue) => `<option value="${optionValue}"></option>`;
+
+  return convertArrayToString(options, getOptionTemplate);
+};
+
+const convertDate = (date) => {
+  const year = date.getFullYear().toString().slice(2);
+  const month = formatNumber(date.getMonth() + 1);
+  const day = formatNumber(date.getDate());
+  const hour = formatNumber(date.getHours());
+  const minute = formatNumber(date.getMinutes());
+
+
+  return `${day}/${month}/${year} ${hour}:${minute}`;
+};
+
+const getOffersList = (offers) => {
+
+  const getOfferTemplate = (offer) => {
+    return (`
+      <div class="event__offer-selector">
+        <input class="event__offer-checkbox  visually-hidden" id="event-offer-${offer.shortTitle}-1" type="checkbox" name="event-offer-${offer.shortTitle}" ${offer.isChecked ? `checked` : ``}>
+        <label class="event__offer-label" for="event-offer-${offer.shortTitle}-1">
+          <span class="event__offer-title">${offer.title}</span>
+          &plus;
+          &euro;&nbsp;<span class="event__offer-price">${offer.price}</span>
+        </label>
+      </div>
+    `);
+  };
+
+  return convertArrayToString(offers, getOfferTemplate);
+};
+
+const getPicturesList = (pictures) => {
+  const getPictureTemplate = (picture) =>
+    `<img class="event__photo" src="${picture.src}" alt="${picture.destination}">`;
+
+  return convertArrayToString(pictures, getPictureTemplate);
+};
 
 const createTripEditTemplate = ({type, destination, basePrice, offers, dateFrom, dateTo, description, pictures}) => {
-
-  const getEventTypeList = (types = []) => {
-    const getEventTypeTemplate = (eventType) => {
-      return (`
-        <div class="event__type-item">
-          <input id="event-type-${eventType}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${eventType}">
-          <label class="event__type-label  event__type-label--${eventType}" for="event-type-${eventType}-1">${formatCase(eventType)}</label>
-        </div>
-      `);
-    };
-
-    return types.map((it) => getEventTypeTemplate(it)).join(`\n`);
-  };
-
-  const getOptionsList = (options) => {
-    const getOptionTemplate = (optionValue) => `<option value="${optionValue}"></option>`;
-
-    return options.map((it) => getOptionTemplate(it)).join(`\n`);
-  };
-
-  const convertDate = (date) => {
-    const formatValue = (value) => {
-      if (value < 10) {
-        return `0` + value;
-      } else {
-        return value;
-      }
-    };
-
-    const year = date.getFullYear().toString().slice(2);
-    const month = formatValue(date.getMonth() + 1);
-    const day = formatValue(date.getDate());
-    const hour = formatValue(date.getHours());
-    const minute = formatValue(date.getMinutes());
-
-
-    return `${day}/${month}/${year} ${hour}:${minute}`;
-  };
-
-  const getOffersList = () => {
-
-    const getOfferTemplate = (offer) => {
-      return (`
-        <div class="event__offer-selector">
-          <input class="event__offer-checkbox  visually-hidden" id="event-offer-${offer.shortTitle}-1" type="checkbox" name="event-offer-${offer.shortTitle}" ${offer.isChecked ? `checked` : ``}>
-          <label class="event__offer-label" for="event-offer-${offer.shortTitle}-1">
-            <span class="event__offer-title">${offer.title}</span>
-            &plus;
-            &euro;&nbsp;<span class="event__offer-price">${offer.price}</span>
-          </label>
-        </div>
-      `);
-    };
-
-    return offers.map((it) => getOfferTemplate(it)).join(`\n`);
-  };
-
-  const getPicturesList = () => {
-    const getPictureTemplate = (picture) =>
-      `<img class="event__photo" src="${picture.src}" alt="${picture.destination}">`;
-
-    return pictures.map((it) => getPictureTemplate(it)).join(`\n`);
-  };
+  const offersList = getOffersList(offers);
+  const picturesList = getPicturesList(pictures);
 
   return (`
     <form class="trip-events__item  event  event--edit" action="#" method="post">
@@ -116,7 +110,7 @@ const createTripEditTemplate = ({type, destination, basePrice, offers, dateFrom,
         <div class="event__field-group  event__field-group--price">
           <label class="event__label" for="event-price-1">
             <span class="visually-hidden">Price</span>
-            ${calculateTotalPrice(basePrice, offers)} &euro;
+            ${basePrice} &euro;
           </label>
           <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="">
         </div>
@@ -130,7 +124,7 @@ const createTripEditTemplate = ({type, destination, basePrice, offers, dateFrom,
           <h3 class="event__section-title  event__section-title--offers">Offers</h3>
 
           <div class="event__available-offers">
-            ${getOffersList()}
+            ${offersList}
           </div>
         </section>
 
@@ -140,7 +134,7 @@ const createTripEditTemplate = ({type, destination, basePrice, offers, dateFrom,
 
           <div class="event__photos-container">
             <div class="event__photos-tape">
-              ${getPicturesList()}
+              ${picturesList}
             </div>
           </div>
         </section>
