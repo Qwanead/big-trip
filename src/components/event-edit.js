@@ -1,20 +1,20 @@
 import {POINT_TYPES, POINT_ACTIVITYS, DESTINATIONS} from '../const';
-import {formatCase, formatNumber, generateTemplates} from '../utils';
+import {formatCase, formatNumber, generateTemplates, createElement} from '../utils';
 
 const getEventTypeTemplate = (eventType) => {
-  return (`
-    <div class="event__type-item">
+  return (
+    `<div class="event__type-item">
       <input id="event-type-${eventType}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${eventType}">
       <label class="event__type-label  event__type-label--${eventType}" for="event-type-${eventType}-1">${formatCase(eventType)}</label>
-    </div>
-  `);
+    </div>`
+  );
 };
 
 const getOptionTemplate = (optionValue) => `<option value="${optionValue}"></option>`;
 
 const getOfferTemplate = ({shortTitle, title, isChecked, price}) => {
-  return (`
-    <div class="event__offer-selector">
+  return (
+    `<div class="event__offer-selector">
       <input class="event__offer-checkbox  visually-hidden"
         id="event-offer-${shortTitle}-1"
         type="checkbox"
@@ -26,8 +26,8 @@ const getOfferTemplate = ({shortTitle, title, isChecked, price}) => {
         &plus;
         &euro;&nbsp;<span class="event__offer-price">${price}</span>
       </label>
-    </div>
-  `);
+    </div>`
+  );
 };
 
 const getPictureTemplate = ({src, description}) =>
@@ -50,12 +50,12 @@ const getOffersList = generateTemplates(getOfferTemplate);
 const getPicturesList = generateTemplates(getPictureTemplate);
 
 
-const createTripEditTemplate = ({type, destination, basePrice, offers, dateFrom, dateTo, description, pictures}) => {
+const createEventEditTemplate = ({type, destination, basePrice, offers, dateFrom, dateTo, description, pictures}) => {
   const offersList = getOffersList(offers);
   const picturesList = getPicturesList(pictures);
 
-  return (`
-    <form class="trip-events__item  event  event--edit" action="#" method="post">
+  return (
+    `<form class="trip-events__item  event  event--edit" action="#" method="post">
       <header class="event__header">
         <div class="event__type-wrapper">
           <label class="event__type  event__type-btn" for="event-type-toggle-1">
@@ -133,8 +133,32 @@ const createTripEditTemplate = ({type, destination, basePrice, offers, dateFrom,
           </div>
         </section>
       </section>
-    </form>
-  `);
+    </form>`
+  );
 };
 
-export {createTripEditTemplate};
+class EventEdit {
+  constructor(point) {
+    this._element = null;
+    this.point = point;
+
+  }
+
+  getTemplate() {
+    return createEventEditTemplate(this.point);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}
+
+export default EventEdit;

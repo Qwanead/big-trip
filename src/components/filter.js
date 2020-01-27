@@ -1,8 +1,8 @@
-import {formatCase, generateTemplates} from '../utils';
+import {formatCase, generateTemplates, createElement} from '../utils';
 
 const getFilterTemplate = ({title, isChecked}) => {
-  return (`
-    <div class="trip-filters__filter">
+  return (
+    `<div class="trip-filters__filter">
       <input
         id="filter-${title}"
         class="trip-filters__filter-input visually-hidden"
@@ -12,21 +12,45 @@ const getFilterTemplate = ({title, isChecked}) => {
         ${isChecked ? `checked` : ``}
       >
       <label class="trip-filters__filter-label" for="filter-${title}">${formatCase(title)}</label>
-    </div>
-  `);
+    </div>`
+  );
 };
 
 const getFilterTemplates = generateTemplates(getFilterTemplate);
 
 const createFilterTemplate = (filters) => {
 
-  return (`
-    <form class="trip-filters" action="#" method="get">
+  return (
+    `<form class="trip-filters" action="#" method="get">
       ${getFilterTemplates(filters)}
 
       <button class="visually-hidden" type="submit">Accept filter</button>
-    </form>
-  `);
+    </form>`
+  );
 };
 
-export {createFilterTemplate};
+class Filter {
+  constructor(filters) {
+    this._element = null;
+    this.filters = filters;
+
+  }
+
+  getTemplate() {
+    return createFilterTemplate(this.filters);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}
+
+export default Filter;

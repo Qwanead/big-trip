@@ -1,4 +1,4 @@
-import {formatCase, formatNumber, generateTemplates} from '../utils';
+import {formatCase, formatNumber, generateTemplates, createElement} from '../utils';
 import {POINT_ACTIVITYS} from '../const';
 
 const MS_IN_MINUTE = 1000 * 60;
@@ -67,13 +67,13 @@ const calculateDiffDate = (beginDate, endDate) => {
 };
 
 const getOfferTemplate = ({title, price}) => {
-  return `
-    <li class="event__offer">
+  return (
+    `<li class="event__offer">
       <span class="event__offer-title">${title}</span>
       &plus;
       &euro;&nbsp;<span class="event__offer-price">${price}</span>
-    </li>
-  `;
+    </li>`
+  );
 };
 
 const getOffersListTemplate = (offersChecked) => {
@@ -92,12 +92,12 @@ const getOffersListTemplate = (offersChecked) => {
 
 const isActivitys = (eventType) => POINT_ACTIVITYS.some((it) => it === eventType);
 
-const createTripEventTemplate = ({type, destination, dateFrom, dateTo, basePrice, offers}) => {
+const createEventTemplate = ({type, destination, dateFrom, dateTo, basePrice, offers}) => {
   const offersChecked = offers.filter((it) => it.isChecked);
   const offersList = getOffersListTemplate(offersChecked);
 
-  return (`
-    <li class="trip-events__item">
+  return (
+    `<li class="trip-events__item">
       <div class="event">
         <div class="event__type">
           <img class="event__type-icon" width="42" height="42" src="img/icons/${type}.png" alt="Event type icon">
@@ -126,8 +126,31 @@ const createTripEventTemplate = ({type, destination, dateFrom, dateTo, basePrice
           <span class="visually-hidden">Open event</span>
         </button>
       </div>
-    </li>
-  `);
+    </li>`
+  );
 };
 
-export {createTripEventTemplate};
+class Event {
+  constructor(point) {
+    this._element = null;
+    this.point = point;
+  }
+
+  getTemplate() {
+    return createEventTemplate(this.point);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}
+
+export default Event;

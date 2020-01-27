@@ -1,5 +1,10 @@
 const NUMBER_LENGTH = 2;
 
+const RenderPosition = {
+  AFTERBEGIN: `afterbegin`,
+  BEFOREEND: `beforeend`
+};
+
 const getRandomInteger = (min, max) => {
   const random = min + Math.random() * (max + 1 - min);
   return Math.floor(random);
@@ -18,4 +23,22 @@ const formatNumber = (number) => number.toString().padStart(NUMBER_LENGTH, `0`);
 const generateTemplates = (getTemplate) =>
   (arr) => arr.reduce((result, it) => result + getTemplate(it), ``);
 
-export {getRandomInteger, getRandomArrayItem, formatCase, formatNumber, generateTemplates};
+const createElement = (template) => {
+  const newElement = document.createElement(`div`);
+  newElement.innerHTML = template;
+
+  return newElement.firstChild;
+};
+
+const render = (container, element, place) => {
+  switch (place) {
+    case RenderPosition.AFTERBEGIN:
+      container.prepend(element);
+      break;
+    case RenderPosition.BEFOREEND:
+      container.append(element);
+      break;
+  }
+};
+
+export {getRandomInteger, getRandomArrayItem, formatCase, formatNumber, generateTemplates, createElement, render, RenderPosition};

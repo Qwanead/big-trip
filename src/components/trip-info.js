@@ -1,5 +1,5 @@
 import {MONTH_NAMES} from '../const';
-import {formatNumber} from '../utils';
+import {formatNumber, createElement} from '../utils';
 
 const ROUTE_INFO_LENGTH = 3;
 
@@ -53,16 +53,40 @@ const createTripInfoTemplate = (points) => {
   const tripDate = getTripDate(points);
   const tripCost = calculateTripCost(points);
 
-  return (`
-    <div class="trip-info__main">
+  return (
+    `<div class="trip-info__main">
       <h1 class="trip-info__title">${tripRoute}</h1>
       <p class="trip-info__dates">${tripDate}</p>
     </div>
 
     <p class="trip-info__cost">
       Total: &euro;&nbsp;<span class="trip-info__cost-value">${tripCost}</span>
-    </p>
-  `);
+    </p>`
+  );
 };
 
-export {createTripInfoTemplate};
+class TripInfo {
+  constructor(points) {
+    this._element = null;
+    this.points = points;
+
+  }
+
+  getTemplate() {
+    return createTripInfoTemplate(this.points);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}
+
+export default TripInfo;
