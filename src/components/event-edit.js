@@ -1,24 +1,37 @@
 import {POINT_TYPES, POINT_ACTIVITYS, DESTINATIONS} from '../const';
-import {formatCase, formatNumber, convertArrayToString} from '../utils';
+import {formatCase, formatNumber, generateTemplates, createElement} from '../utils';
 
-const getEventTypeList = (types) => {
-  const getEventTypeTemplate = (eventType) => {
-    return (`
-      <div class="event__type-item">
-        <input id="event-type-${eventType}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${eventType}">
-        <label class="event__type-label  event__type-label--${eventType}" for="event-type-${eventType}-1">${formatCase(eventType)}</label>
-      </div>
-    `);
-  };
-
-  return convertArrayToString(types, getEventTypeTemplate);
+const getEventTypeTemplate = (eventType) => {
+  return (
+    `<div class="event__type-item">
+      <input id="event-type-${eventType}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${eventType}">
+      <label class="event__type-label  event__type-label--${eventType}" for="event-type-${eventType}-1">${formatCase(eventType)}</label>
+    </div>`
+  );
 };
 
-const getOptionsList = (options) => {
-  const getOptionTemplate = (optionValue) => `<option value="${optionValue}"></option>`;
+const getOptionTemplate = (optionValue) => `<option value="${optionValue}"></option>`;
 
-  return convertArrayToString(options, getOptionTemplate);
+const getOfferTemplate = ({shortTitle, title, isChecked, price}) => {
+  return (
+    `<div class="event__offer-selector">
+      <input class="event__offer-checkbox  visually-hidden"
+        id="event-offer-${shortTitle}-1"
+        type="checkbox"
+        name="event-offer-${shortTitle}"
+        ${isChecked ? `checked` : ``}
+      >
+      <label class="event__offer-label" for="event-offer-${shortTitle}-1">
+        <span class="event__offer-title">${title}</span>
+        &plus;
+        &euro;&nbsp;<span class="event__offer-price">${price}</span>
+      </label>
+    </div>`
+  );
 };
+
+const getPictureTemplate = ({src, description}) =>
+  `<img class="event__photo" src="${src}" alt="${description}">`;
 
 const convertDate = (date) => {
   const year = date.getFullYear().toString().slice(2);
@@ -31,37 +44,18 @@ const convertDate = (date) => {
   return `${day}/${month}/${year} ${hour}:${minute}`;
 };
 
-const getOffersList = (offers) => {
+const getEventTypeList = generateTemplates(getEventTypeTemplate);
+const getOptionsList = generateTemplates(getOptionTemplate);
+const getOffersList = generateTemplates(getOfferTemplate);
+const getPicturesList = generateTemplates(getPictureTemplate);
 
-  const getOfferTemplate = (offer) => {
-    return (`
-      <div class="event__offer-selector">
-        <input class="event__offer-checkbox  visually-hidden" id="event-offer-${offer.shortTitle}-1" type="checkbox" name="event-offer-${offer.shortTitle}" ${offer.isChecked ? `checked` : ``}>
-        <label class="event__offer-label" for="event-offer-${offer.shortTitle}-1">
-          <span class="event__offer-title">${offer.title}</span>
-          &plus;
-          &euro;&nbsp;<span class="event__offer-price">${offer.price}</span>
-        </label>
-      </div>
-    `);
-  };
 
-  return convertArrayToString(offers, getOfferTemplate);
-};
-
-const getPicturesList = (pictures) => {
-  const getPictureTemplate = (picture) =>
-    `<img class="event__photo" src="${picture.src}" alt="${picture.destination}">`;
-
-  return convertArrayToString(pictures, getPictureTemplate);
-};
-
-const createTripEditTemplate = ({type, destination, basePrice, offers, dateFrom, dateTo, description, pictures}) => {
+const createEventEditTemplate = ({type, destination, basePrice, offers, dateFrom, dateTo, description, pictures}) => {
   const offersList = getOffersList(offers);
   const picturesList = getPicturesList(pictures);
 
-  return (`
-    <form class="trip-events__item  event  event--edit" action="#" method="post">
+  return (
+    `<form class="trip-events__item  event  event--edit" action="#" method="post">
       <header class="event__header">
         <div class="event__type-wrapper">
           <label class="event__type  event__type-btn" for="event-type-toggle-1">
@@ -139,8 +133,32 @@ const createTripEditTemplate = ({type, destination, basePrice, offers, dateFrom,
           </div>
         </section>
       </section>
-    </form>
-  `);
+    </form>`
+  );
 };
 
-export {createTripEditTemplate};
+class EventEdit {
+  constructor(point) {
+    this._element = null;
+    this.point = point;
+
+  }
+
+  getTemplate() {
+    return createEventEditTemplate(this.point);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}
+
+export default EventEdit;

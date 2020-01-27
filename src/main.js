@@ -1,15 +1,14 @@
-import {createTripInfoTemplate} from './components/trip-info';
-import {createMenuTemplate} from './components/menu';
-import {createFilterTemplate} from './components/filter';
-import {createSortTemplate} from './components/sort';
-import {createTripEditTemplate} from './components/trip-edit';
-import {createTripListTemplate} from './components/trip-list';
-import {createTripEventTemplate} from './components/trip-event';
+import TripInfoComponent from './components/trip-info';
+import MenuComponent from './components/menu';
+import FilterComponent from './components/filter';
+import SortComponent from './components/sort';
+import EventEdit from './components/event-edit';
+import EventListComponent from './components/event-list';
+import EventComponent from './components/event';
 import {getPointMocks} from './mocks/point';
 import {MENU_ITEMS} from './mocks/menu';
 import {FILTERS} from './mocks/filters';
-import {convertArrayToString} from './utils';
-
+import {render, RenderPosition} from './utils';
 
 const EVENT_COUNT = 4;
 
@@ -19,17 +18,36 @@ const menuHeaderElement = tripControlsElement.querySelector(`h2`);
 const tripEventsElement = document.querySelector(`.trip-events`);
 const points = getPointMocks(EVENT_COUNT).sort((a, b) => a.dateFrom - b.dateFrom);
 
-const render = (container, template, position = `beforeend`) => {
-  container.insertAdjacentHTML(position, template);
+const renderEvent = (eventList, point) => {
+  const eventComponent = new EventComponent(point);
+  const eventEditComponent = new EventEdit(point);
+  const rollupButtonElement = eventComponent.getElement().querySelector(`.event__rollup-btn`);
+  const eventElement = eventComponent.getElement();
+  const eventFormElement = eventEditComponent.getElement();
+
+  const onRollupButtonClick = () => {
+    eventList.replaceChild(eventFormElement, eventElement);
+  };
+
+  const onEventFormSubmit = (evt) => {
+    evt.preventDefault();
+    eventList.replaceChild(eventElement, eventFormElement);
+  };
+
+  rollupButtonElement.addEventListener(`click`, onRollupButtonClick);
+  eventFormElement.addEventListener(`submit`, onEventFormSubmit);
+
+  render(eventList, eventElement, RenderPosition.BEFOREEND);
 };
 
-render(tripInfoElement, createTripInfoTemplate(points), `afterbegin`);
-render(menuHeaderElement, createMenuTemplate(MENU_ITEMS), `afterend`);
-render(tripControlsElement, createFilterTemplate(FILTERS));
-render(tripEventsElement, createSortTemplate());
-render(tripEventsElement, createTripEditTemplate(points[0]));
-render(tripEventsElement, createTripListTemplate());
+render(tripInfoElement, new TripInfoComponent(points).getElement(), RenderPosition.AFTERBEGIN);
+render(menuHeaderElement, new MenuComponent(MENU_ITEMS).getElement(), RenderPosition.AFTERBEGIN);
+render(tripControlsElement, new FilterComponent(FILTERS).getElement(), RenderPosition.BEFOREEND);
+render(tripEventsElement, new SortComponent().getElement(), RenderPosition.BEFOREEND);
+render(tripEventsElement, new EventListComponent().getElement(), RenderPosition.BEFOREEND);
 
 const eventsListElement = tripEventsElement.querySelector(`.trip-events__list`);
 
-render(eventsListElement, convertArrayToString(points.slice(1), createTripEventTemplate));
+points.forEach((point) =>
+  renderEvent(eventsListElement, point)
+);

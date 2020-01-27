@@ -1,20 +1,40 @@
-import {convertArrayToString} from '../utils';
+import {generateTemplates, createElement} from '../utils';
 
-const getMenuList = (menuItems) => {
-  const getMenuItemTemplate = (menuItem) =>
-    `<a class="trip-tabs__btn ${menuItem.isChecked ? `trip-tabs__btn--active` : ``}" href="#">${menuItem.title}</a>`;
+const getMenuItemTemplate = ({isChecked, title}) =>
+  `<a class="trip-tabs__btn ${isChecked ? `trip-tabs__btn--active` : ``}" href="#">${title}</a>`;
 
-  return convertArrayToString(menuItems, getMenuItemTemplate);
-};
+const getMenuList = generateTemplates(getMenuItemTemplate);
 
 const createMenuTemplate = (menuItems) => {
-  const menuList = getMenuList(menuItems);
-
-  return (`
-    <nav class="trip-controls__trip-tabs  trip-tabs">
-      ${menuList}
-    </nav>
-  `);
+  return (
+    `<nav class="trip-controls__trip-tabs  trip-tabs">
+      ${getMenuList(menuItems)}
+    </nav>`
+  );
 };
 
-export {createMenuTemplate};
+class Menu {
+  constructor(menuItems) {
+    this._element = null;
+    this.menuItems = menuItems;
+
+  }
+
+  getTemplate() {
+    return createMenuTemplate(this.menuItems);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}
+
+export default Menu;
