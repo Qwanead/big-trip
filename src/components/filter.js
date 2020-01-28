@@ -1,4 +1,5 @@
-import {formatCase, generateTemplates, createElement} from '../utils';
+import {formatCase, generateTemplates} from '../utils/common';
+import AbstractComponent from './abstract-component';
 
 const getFilterTemplate = ({title, isChecked}) => {
   return (
@@ -29,27 +30,14 @@ const createFilterTemplate = (filters) => {
   );
 };
 
-class Filter {
+class Filter extends AbstractComponent {
   constructor(filters) {
-    this._element = null;
+    super();
     this._filters = filters;
-
   }
 
   getTemplate() {
     return createFilterTemplate(this._filters);
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }
 

@@ -2,70 +2,28 @@ import TripInfoComponent from './components/trip-info';
 import TripCostComponent from './components/trip-cost';
 import MenuComponent from './components/menu';
 import FilterComponent from './components/filter';
-import NoPointsComponent from './components/no-points';
-import SortComponent from './components/sort';
-import EventEdit from './components/event-edit';
-import EventListComponent from './components/event-list';
-import EventComponent from './components/event';
-import {getPointMocks} from './mocks/point';
+import EventsComponent from './components/events';
+import TripController from './controllers/trip';
+import {getPointsMock} from './mocks/point';
 import {MENU_ITEMS} from './mocks/menu';
 import {FILTERS} from './mocks/filters';
-import {render, RenderPosition} from './utils';
+import {render, RenderPosition} from './utils/render';
 
 const EVENT_COUNT = 4;
 
 const tripInfoElement = document.querySelector(`.trip-info`);
 const tripControlsElement = document.querySelector(`.trip-controls`);
 const menuHeaderElement = tripControlsElement.querySelector(`h2`);
-const tripEventsElement = document.querySelector(`.trip-events`);
-const points = getPointMocks(EVENT_COUNT).sort((a, b) => a.dateFrom - b.dateFrom);
+const pageBodyContainer = document.querySelector(`.page-main .page-body__container`);
+const points = getPointsMock(EVENT_COUNT).sort((a, b) => a.dateFrom - b.dateFrom);
+const eventsComponent = new EventsComponent();
 
-const renderEvent = (eventList, point) => {
-  const eventComponent = new EventComponent(point);
-  const eventEditComponent = new EventEdit(point);
-  const eventElement = eventComponent.getElement();
-  const eventFormElement = eventEditComponent.getElement();
+render(tripInfoElement, new TripInfoComponent(points), RenderPosition.AFTERBEGIN);
+render(tripInfoElement, new TripCostComponent(points), RenderPosition.BEFOREEND);
+render(menuHeaderElement, new MenuComponent(MENU_ITEMS), RenderPosition.AFTER);
+render(tripControlsElement, new FilterComponent(FILTERS), RenderPosition.BEFOREEND);
+render(pageBodyContainer, eventsComponent, RenderPosition.BEFOREEND);
 
-  const onDocumentKeyDown = (evt) => {
-    const isEscKey = evt.key === `Escape` || evt.key === `Esc`;
+const tripComponent = new TripController(eventsComponent);
 
-    if (isEscKey) {
-      eventList.replaceChild(eventElement, eventFormElement);
-      document.removeEventListener(`keydown`, onDocumentKeyDown);
-    }
-  };
-
-  const onRollupButtonClick = () => {
-    eventList.replaceChild(eventFormElement, eventElement);
-
-    document.addEventListener(`keydown`, onDocumentKeyDown);
-  };
-
-  const onEventFormSubmit = (evt) => {
-    evt.preventDefault();
-    eventList.replaceChild(eventElement, eventFormElement);
-  };
-
-  eventComponent.setRollupButtonClickHandler(onRollupButtonClick);
-  eventEditComponent.setFormSubmitHandler(onEventFormSubmit);
-
-  render(eventList, eventElement, RenderPosition.BEFOREEND);
-};
-
-render(tripInfoElement, new TripInfoComponent(points).getElement(), RenderPosition.AFTERBEGIN);
-render(tripInfoElement, new TripCostComponent(points).getElement(), RenderPosition.BEFOREEND);
-render(menuHeaderElement, new MenuComponent(MENU_ITEMS).getElement(), RenderPosition.AFTER);
-render(tripControlsElement, new FilterComponent(FILTERS).getElement(), RenderPosition.BEFOREEND);
-
-if (points.length === 0) {
-  render(tripEventsElement, new NoPointsComponent().getElement(), RenderPosition.BEFOREEND);
-} else {
-  render(tripEventsElement, new SortComponent().getElement(), RenderPosition.BEFOREEND);
-  render(tripEventsElement, new EventListComponent().getElement(), RenderPosition.BEFOREEND);
-
-  const eventsListElement = tripEventsElement.querySelector(`.trip-events__list`);
-
-  points.forEach((point) =>
-    renderEvent(eventsListElement, point)
-  );
-}
+tripComponent.render(points);

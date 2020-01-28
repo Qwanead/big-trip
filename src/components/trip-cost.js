@@ -1,7 +1,7 @@
-import {createElement} from '../utils';
+import AbstractComponent from './abstract-component';
 
 const calculateEventPrice = (basePrice, offers) => {
-  const offersChecked = offers.filter((it) => it.isChecked);
+  const offersChecked = offers.filter((offer) => offer.isChecked);
   const offersPrice = offersChecked.reduce((result, offer) => offer.price + result, 0);
 
   return offersPrice + basePrice;
@@ -21,26 +21,14 @@ const createTripCostTemplate = (points) => {
   );
 };
 
-class TripCost {
+class TripCost extends AbstractComponent {
   constructor(points) {
-    this._element = null;
+    super();
     this._points = points;
   }
 
   getTemplate() {
     return createTripCostTemplate(this._points);
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }
 
