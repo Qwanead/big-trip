@@ -32,12 +32,12 @@ const createFilterTemplate = (filters) => {
 class Filter {
   constructor(filters) {
     this._element = null;
-    this.filters = filters;
+    this._filters = filters;
 
   }
 
   getTemplate() {
-    return createFilterTemplate(this.filters);
+    return createFilterTemplate(this._filters);
   }
 
   getElement() {

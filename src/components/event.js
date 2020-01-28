@@ -133,11 +133,11 @@ const createEventTemplate = ({type, destination, dateFrom, dateTo, basePrice, of
 class Event {
   constructor(point) {
     this._element = null;
-    this.point = point;
+    this._point = point;
   }
 
   getTemplate() {
-    return createEventTemplate(this.point);
+    return createEventTemplate(this._point);
   }
 
   getElement() {
@@ -150,6 +150,11 @@ class Event {
 
   removeElement() {
     this._element = null;
+  }
+
+  setRollupButtonClickHandler(handler) {
+    this.getElement().querySelector(`.event__rollup-btn`)
+      .addEventListener(`click`, handler);
   }
 }
 

@@ -2,7 +2,8 @@ const NUMBER_LENGTH = 2;
 
 const RenderPosition = {
   AFTERBEGIN: `afterbegin`,
-  BEFOREEND: `beforeend`
+  BEFOREEND: `beforeend`,
+  AFTER: `after`,
 };
 
 const getRandomInteger = (min, max) => {
@@ -37,6 +38,9 @@ const render = (container, element, place) => {
       break;
     case RenderPosition.BEFOREEND:
       container.append(element);
+      break;
+    case RenderPosition.AFTER:
+      container.after(element);
       break;
   }
 };
