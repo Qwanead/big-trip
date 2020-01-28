@@ -17,7 +17,6 @@ class Menu {
   constructor(menuItems) {
     this._element = null;
     this.menuItems = menuItems;
-
   }
 
   getTemplate() {
