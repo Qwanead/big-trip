@@ -4,20 +4,22 @@ import NoPointsComponent from '../components/no-points';
 import EventEdit from '../components/event-edit';
 import EventComponent from '../components/event';
 import {render, replace, RenderPosition} from '../utils/render';
+import {SortType} from '../const';
+
 
 const KeyboardKey = {
   ESCAPE: `Esc`,
   ESCAPE_IE: `Escape`,
 };
 
+const isEscKey = ({key}) =>
+  key === KeyboardKey.ESCAPE || key === KeyboardKey.ESCAPE_IE;
+
 const renderEvent = (eventListElement, point) => {
   const eventComponent = new EventComponent(point);
   const eventEditComponent = new EventEdit(point);
 
   const onDocumentKeyDown = (evt) => {
-    const isEscKey = ({key}) =>
-      key === KeyboardKey.ESCAPE || key === KeyboardKey.ESCAPE_IE;
-
     if (isEscKey(evt)) {
       replace(eventComponent, eventEditComponent);
       document.removeEventListener(`keydown`, onDocumentKeyDown);
@@ -36,7 +38,7 @@ const renderEvent = (eventListElement, point) => {
   };
 
   eventComponent.setOnRollupButtonClick(onRollupButtonClick);
-  eventEditComponent.setOnEventFormSubmit(onEventFormSubmit);
+  eventEditComponent.setOnFormSubmit(onEventFormSubmit);
 
   render(eventListElement, eventComponent, RenderPosition.BEFOREEND);
 };
@@ -68,6 +70,25 @@ class Trip {
       const eventsListElement = container.querySelector(`.trip-events__list`);
 
       renderEvents(eventsListElement, points);
+
+      this._sortComponent.setOnSortingFormChange((sortType) => {
+        let sortedTasks = [];
+
+        switch (sortType) {
+          case SortType.PRICE:
+            sortedTasks = points.slice().sort((a, b) => b.basePrice - a.basePrice);
+            break;
+          case SortType.TIME:
+            sortedTasks = points.slice().sort((a, b) => a.duration - b.duration);
+            break;
+          case SortType.DEFAULT:
+            sortedTasks = points;
+            break;
+        }
+
+        eventsListElement.innerHTML = ``;
+        renderEvents(eventsListElement, sortedTasks, RenderPosition.BEFOREEND);
+      });
     }
   }
 }

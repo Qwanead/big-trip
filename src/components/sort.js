@@ -1,5 +1,5 @@
 import AbstractComponent from './abstract-component';
-
+import {SortType} from '../const';
 
 const createSortTemplate = () => {
   return (
@@ -37,8 +37,22 @@ const createSortTemplate = () => {
 };
 
 class Sort extends AbstractComponent {
+  constructor() {
+    super();
+
+    this._currentSortType = SortType.DEFAULT;
+  }
+
   getTemplate() {
     return createSortTemplate();
+  }
+
+  setOnSortingFormChange(handler) {
+    this.getElement().addEventListener(`change`, (evt) => {
+      const sortType = evt.target.value;
+      this._currentSortType = sortType;
+      handler(sortType);
+    });
   }
 }
 
