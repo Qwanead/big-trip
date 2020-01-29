@@ -142,7 +142,7 @@ class Event extends AbstractComponent {
     return createEventTemplate(this._point);
   }
 
-  setRollupButtonClickHandler(handler) {
+  setOnRollupButtonClick(handler) {
     this.getElement().querySelector(`.event__rollup-btn`)
       .addEventListener(`click`, handler);
   }

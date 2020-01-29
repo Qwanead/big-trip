@@ -22,6 +22,8 @@ const render = (container, component, place) => {
     case RenderPosition.AFTER:
       container.after(component.getElement());
       break;
+    default:
+      throw new Error(`Unknown render position`);
   }
 };
 
@@ -31,14 +33,13 @@ const remove = (component) => {
 };
 
 const replace = (newComponent, oldComponent) => {
-  const parentElement = oldComponent.getElement().parentElement;
   const newElement = newComponent.getElement();
   const oldElement = oldComponent.getElement();
 
-  const isExistElements = !!(parentElement && newElement && oldElement);
+  const isExistElements = !!(newElement && oldElement);
 
-  if (isExistElements && parentElement.contains(oldElement)) {
-    parentElement.replaceChild(newElement, oldElement);
+  if (isExistElements) {
+    oldElement.replaceWith(newElement);
   }
 };
 

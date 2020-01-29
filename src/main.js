@@ -14,7 +14,7 @@ const EVENT_COUNT = 4;
 const tripInfoElement = document.querySelector(`.trip-info`);
 const tripControlsElement = document.querySelector(`.trip-controls`);
 const menuHeaderElement = tripControlsElement.querySelector(`h2`);
-const pageBodyContainer = document.querySelector(`.page-main .page-body__container`);
+const eventsContainerElement = document.querySelector(`.page-main .page-body__container`);
 const points = getPointsMock(EVENT_COUNT).sort((a, b) => a.dateFrom - b.dateFrom);
 const eventsComponent = new EventsComponent();
 
@@ -22,7 +22,7 @@ render(tripInfoElement, new TripInfoComponent(points), RenderPosition.AFTERBEGIN
 render(tripInfoElement, new TripCostComponent(points), RenderPosition.BEFOREEND);
 render(menuHeaderElement, new MenuComponent(MENU_ITEMS), RenderPosition.AFTER);
 render(tripControlsElement, new FilterComponent(FILTERS), RenderPosition.BEFOREEND);
-render(pageBodyContainer, eventsComponent, RenderPosition.BEFOREEND);
+render(eventsContainerElement, eventsComponent, RenderPosition.BEFOREEND);
 
 const tripComponent = new TripController(eventsComponent);
 

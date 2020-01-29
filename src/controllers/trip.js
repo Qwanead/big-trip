@@ -3,16 +3,22 @@ import EventListComponent from '../components/event-list';
 import NoPointsComponent from '../components/no-points';
 import EventEdit from '../components/event-edit';
 import EventComponent from '../components/event';
-import {render, replace, RenderPosition} from '../utils/render.js';
+import {render, replace, RenderPosition} from '../utils/render';
+
+const KeyboardKey = {
+  ESCAPE: `Esc`,
+  ESCAPE_IE: `Escape`,
+};
 
 const renderEvent = (eventListElement, point) => {
   const eventComponent = new EventComponent(point);
   const eventEditComponent = new EventEdit(point);
 
   const onDocumentKeyDown = (evt) => {
-    const isEscKey = evt.key === `Escape` || evt.key === `Esc`;
+    const isEscKey = ({key}) =>
+      key === KeyboardKey.ESCAPE || key === KeyboardKey.ESCAPE_IE;
 
-    if (isEscKey) {
+    if (isEscKey(evt)) {
       replace(eventComponent, eventEditComponent);
       document.removeEventListener(`keydown`, onDocumentKeyDown);
     }
@@ -29,8 +35,8 @@ const renderEvent = (eventListElement, point) => {
     replace(eventComponent, eventEditComponent);
   };
 
-  eventComponent.setRollupButtonClickHandler(onRollupButtonClick);
-  eventEditComponent.setFormSubmitHandler(onEventFormSubmit);
+  eventComponent.setOnRollupButtonClick(onRollupButtonClick);
+  eventEditComponent.setOnEventFormSubmit(onEventFormSubmit);
 
   render(eventListElement, eventComponent, RenderPosition.BEFOREEND);
 };

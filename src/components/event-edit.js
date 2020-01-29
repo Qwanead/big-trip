@@ -147,7 +147,7 @@ class EventEdit extends AbstractComponent {
     return createEventEditTemplate(this._point);
   }
 
-  setFormSubmitHandler(handler) {
+  setOnEventFormSubmit(handler) {
     this.getElement().addEventListener(`submit`, handler);
   }
 }
