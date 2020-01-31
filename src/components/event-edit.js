@@ -1,5 +1,8 @@
+import flatpickr from 'flatpickr';
+import 'flatpickr/dist/flatpickr.min.css';
+import 'flatpickr/dist/themes/light.css';
 import {POINT_TYPES, POINT_ACTIVITYS, DESTINATIONS} from '../const';
-import {formatCase, formatNumber, generateTemplates} from '../utils/common';
+import {formatCase, generateTemplates} from '../utils/common';
 import AbstractSmartComponent from './abstract-smart-component';
 
 const getEventTypeTemplate = (eventType) => {
@@ -33,17 +36,6 @@ const getOfferTemplate = ({shortTitle, title, isChecked, price}) => {
 
 const getPictureTemplate = ({src, description}) =>
   `<img class="event__photo" src="${src}" alt="${description}">`;
-
-const convertDate = (date) => {
-  const year = date.getFullYear().toString().slice(2);
-  const month = formatNumber(date.getMonth() + 1);
-  const day = formatNumber(date.getDate());
-  const hour = formatNumber(date.getHours());
-  const minute = formatNumber(date.getMinutes());
-
-
-  return `${day}/${month}/${year} ${hour}:${minute}`;
-};
 
 const getEventTypeList = generateTemplates(getEventTypeTemplate);
 const getOptionsList = generateTemplates(getOptionTemplate);
@@ -96,12 +88,12 @@ const createEventEditTemplate = (point, option) => {
           <label class="visually-hidden" for="event-start-time-1">
             From
           </label>
-          <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${convertDate(dateFrom)}">
+          <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${dateFrom}">
           &mdash;
           <label class="visually-hidden" for="event-end-time-1">
             To
           </label>
-          <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${convertDate(dateTo)}">
+          <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${dateTo}">
         </div>
 
         <div class="event__field-group  event__field-group--price">
@@ -164,8 +156,11 @@ class EventEdit extends AbstractSmartComponent {
 
     this._onFormSubmit = null;
     this._onFavoriteButtonClick = null;
+    this._flatpickrDateTo = null;
+    this._flatpickrDateFrom = null;
 
     this._subscribeOnEvents();
+    this._applyFlatpickr();
   }
 
   getTemplate() {
@@ -178,21 +173,64 @@ class EventEdit extends AbstractSmartComponent {
     this.setOnFavoriteButtonClick(this._onFavoriteButtonClick);
   }
 
-  setOnFormSubmit(handler) {
-    this._onFormSubmit = handler;
-    this.getElement().addEventListener(`submit`, handler);
+  rerender() {
+    super.rerender();
+
+    this._applyFlatpickr();
   }
 
-  setOnFavoriteButtonClick(handler) {
-    const favoriteButton = this.getElement().querySelector(`.event__favorite-btn`);
-    this._onFavoriteButtonClick = handler;
-    favoriteButton.addEventListener(`click`, handler);
+  setOnFormSubmit(onSubmit) {
+    this._onFormSubmit = onSubmit;
+    this.getElement().addEventListener(`submit`, onSubmit);
+  }
+
+  setOnFavoriteButtonClick(onClick) {
+    const favoriteButtonElement = this.getElement().querySelector(`.event__favorite-btn`);
+    this._onFavoriteButtonClick = onClick;
+    favoriteButtonElement.addEventListener(`click`, onClick);
   }
 
   reset() {
     this._type = this._point.type;
 
     this.rerender();
+  }
+
+  _applyFlatpickr() {
+    const dateFromElement = this.getElement().querySelector(`#event-start-time-1`);
+    const dateToElement = this.getElement().querySelector(`#event-end-time-1`);
+
+    if (this._flatpickrDateTo !== null) {
+      this._flatpickrDateTo.destroy();
+      this._flatpickrDateTo = null;
+    }
+
+    if (this._flatpickrDateFrom !== null) {
+      this._flatpickrDateFrom.destroy();
+      this._flatpickrDateFrom = null;
+    }
+
+    this._flatpickrDateFrom = flatpickr(dateFromElement, {
+      enableTime: true,
+      dateFormat: `d/m/Y H:i`,
+      altInput: false,
+      altFormat: `d/m/Y H:i`,
+      defaultDate: this._point.dateFrom,
+      onClose: () => {
+        this._flatpickrDateTo.set(`minDate`, dateFromElement.value);
+      }
+    });
+
+    this._flatpickrDateTo = flatpickr(dateToElement, {
+      enableTime: true,
+      dateFormat: `d/m/Y H:i`,
+      altInput: true,
+      altFormat: `d/m/Y H:i`,
+      defaultDate: this._point.dateTo,
+      onClose: () => {
+        this._flatpickrDateFrom.set(`maxDate`, dateToElement.value);
+      }
+    });
   }
 
   _subscribeOnEvents() {

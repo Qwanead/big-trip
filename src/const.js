@@ -21,25 +21,10 @@ const DESTINATIONS = [
   `Saint Petersburg`,
 ];
 
-const MONTH_NAMES = [
-  `January`,
-  `February`,
-  `March`,
-  `April`,
-  `May`,
-  `June`,
-  `July`,
-  `August`,
-  `September`,
-  `October`,
-  `November`,
-  `December`,
-];
-
 const SortType = {
   PRICE: `sort-price`,
   TIME: `sort-time`,
   DEFAULT: `sort-event`,
 };
 
-export {POINT_TYPES, POINT_ACTIVITYS, DESTINATIONS, MONTH_NAMES, SortType};
+export {POINT_TYPES, POINT_ACTIVITYS, DESTINATIONS, SortType};
