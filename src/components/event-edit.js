@@ -178,15 +178,15 @@ class EventEdit extends AbstractSmartComponent {
     this.setOnFavoriteButtonClick(this._onFavoriteButtonClick);
   }
 
-  setOnFormSubmit(handler) {
-    this._onFormSubmit = handler;
-    this.getElement().addEventListener(`submit`, handler);
+  setOnFormSubmit(onSubmit) {
+    this._onFormSubmit = onSubmit;
+    this.getElement().addEventListener(`submit`, onSubmit);
   }
 
-  setOnFavoriteButtonClick(handler) {
-    const favoriteButton = this.getElement().querySelector(`.event__favorite-btn`);
-    this._onFavoriteButtonClick = handler;
-    favoriteButton.addEventListener(`click`, handler);
+  setOnFavoriteButtonClick(onClick) {
+    const favoriteButtonElement = this.getElement().querySelector(`.event__favorite-btn`);
+    this._onFavoriteButtonClick = onClick;
+    favoriteButtonElement.addEventListener(`click`, onClick);
   }
 
   reset() {

@@ -11,16 +11,16 @@ const createElement = (template) => {
   return newElement.firstChild;
 };
 
-const render = (container, component, place) => {
+const render = (containerElement, component, place) => {
   switch (place) {
     case RenderPosition.AFTERBEGIN:
-      container.prepend(component.getElement());
+      containerElement.prepend(component.getElement());
       break;
     case RenderPosition.BEFOREEND:
-      container.append(component.getElement());
+      containerElement.append(component.getElement());
       break;
     case RenderPosition.AFTER:
-      container.after(component.getElement());
+      containerElement.after(component.getElement());
       break;
     default:
       throw new Error(`Unknown render position`);
@@ -33,14 +33,7 @@ const remove = (component) => {
 };
 
 const replace = (newComponent, oldComponent) => {
-  const newElement = newComponent.getElement();
-  const oldElement = oldComponent.getElement();
-
-  const isExistElements = !!(newElement && oldElement);
-
-  if (isExistElements) {
-    oldElement.replaceWith(newElement);
-  }
+  oldComponent.getElement().replaceWith(newComponent.getElement());
 };
 
 export {createElement, render, RenderPosition, remove, replace};

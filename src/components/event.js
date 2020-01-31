@@ -146,10 +146,10 @@ class Event extends AbstractSmartComponent {
     this.setOnRollupButtonClick(this._onRollupButtonClick);
   }
 
-  setOnRollupButtonClick(handler) {
-    this._onRollupButtonClick = handler;
+  setOnRollupButtonClick(onClick) {
+    this._onRollupButtonClick = onClick;
     this.getElement().querySelector(`.event__rollup-btn`)
-      .addEventListener(`click`, handler);
+      .addEventListener(`click`, onClick);
   }
 }
 

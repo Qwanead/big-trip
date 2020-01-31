@@ -47,11 +47,11 @@ class Sort extends AbstractComponent {
     return createSortTemplate();
   }
 
-  setOnSortingFormChange(handler) {
+  setOnSortTypeChange(onChange) {
     this.getElement().addEventListener(`change`, (evt) => {
       const sortType = evt.target.value;
       this._currentSortType = sortType;
-      handler(sortType);
+      onChange(sortType);
     });
   }
 }
