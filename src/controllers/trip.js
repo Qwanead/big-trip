@@ -22,7 +22,7 @@ class TripController {
 
     this._noPointsComponent = new NoPointsComponent();
     this._sortComponent = new SortComponent();
-    this._eventListComponent = new EventListComponent();
+    this._eventListComponent = null;
 
     this._onDataChange = this._onDataChange.bind(this);
     this._onSortingFormChange = this._onSortingFormChange.bind(this);
@@ -35,6 +35,8 @@ class TripController {
   render(points) {
     this._points = points;
     const containerElement = this._container.getElement();
+    this._eventListComponent = new EventListComponent(this._points);
+
 
     if (points.length === 0) {
       render(containerElement, this._noPointsComponent, RenderPosition.BEFOREEND);
@@ -44,14 +46,13 @@ class TripController {
     render(containerElement, this._sortComponent, RenderPosition.BEFOREEND);
     render(containerElement, this._eventListComponent, RenderPosition.BEFOREEND);
 
-    const eventsListElement = containerElement.querySelector(`.trip-events__list`);
+    const eventsListElement = containerElement.querySelector(`.trip-days`);
 
     this._renderedEvents = renderEvents(eventsListElement, this._points, this._onDataChange, this._onViewChange);
   }
 
   _onSortingFormChange(sortType) {
     let sortedPoints = [];
-    const eventsListElement = this._container.getElement().querySelector(`.trip-events__list`);
 
     switch (sortType) {
       case SortType.PRICE:
@@ -65,7 +66,17 @@ class TripController {
         break;
     }
 
-    eventsListElement.innerHTML = ``;
+    // eventsListElement.innerHTML = ``;
+    // this._eventListComponent.removeElement();
+
+    if (sortType === SortType.DEFAULT) {
+      this._eventListComponent.rerenderDefault();
+    } else {
+      this._eventListComponent.rerenderEmpty();
+    }
+
+    const eventsListElement = this._container.getElement().querySelector(`.trip-days`);
+
     this._renderedEvents = renderEvents(eventsListElement, sortedPoints, this._onDataChange, this._onViewChange);
   }
 

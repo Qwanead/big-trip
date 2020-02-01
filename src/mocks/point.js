@@ -74,7 +74,7 @@ const getRandomText = () => {
 };
 
 const getRandomDate = () => {
-  const MAX_DIFF_HOUR = 75;
+  const MAX_DIFF_HOUR = 275;
   const MAX_DIFF_MINUTE = 60;
 
   let dateFrom = new Date();

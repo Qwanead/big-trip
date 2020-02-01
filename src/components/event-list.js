@@ -1,24 +1,93 @@
-import AbstractComponent from './abstract-component';
+import moment from 'moment';
+import {generateTemplates} from '../utils/common';
+import AbstractSmartComponent from './abstract-smart-component';
 
+const getDayTemplate = ({day, dayNumber}) => {
+  return (
+    `<li class="trip-days__item  day">
+      <div class="day__info">
+        <span class="day__counter">${dayNumber}</span>
+        <time class="day__date" datetime="${day}">${moment(day, `YYYY-MM-DD`).format(`MMM DD`).toUpperCase()}</time>
+      </div>
 
-const createEventListTemplate = () => {
+      <ul class="trip-events__list" date-time="${day}"></ul>
+    </li>`
+  );
+};
+
+const getDaysDiff = (day, previousDay) =>
+  moment(day, `YYYY-MM-DD`).diff(moment(previousDay, `YYYY-MM-DD`), `day`);
+
+const getDaysListTemplate = (points) => {
+  const DaySet = new Set();
+
+  points.forEach((point) =>
+    DaySet.add(moment(point.dateFrom).format(`YYYY-MM-DD`))
+  );
+
+  let days = Array.from(DaySet).sort();
+  const daysWithNumbers = [];
+
+  days.forEach((day, index, arr) => {
+    if (index === 0) {
+      daysWithNumbers.push({day, dayNumber: 1});
+    } else {
+      const previousDayNumber = daysWithNumbers[index - 1].dayNumber;
+      daysWithNumbers
+        .push({
+          day,
+          dayNumber: getDaysDiff(day, arr[index - 1]) + previousDayNumber
+        });
+    }
+  });
+
+  const getDaysTemplates = generateTemplates(getDayTemplate);
+  return getDaysTemplates(daysWithNumbers);
+};
+
+const createEventListTemplate = (points) => {
+  let daysListTemplate = (
+    `<li class="trip-days__item  day">
+      <div class="day__info"></div>
+      <ul class="trip-events__list"></ul>
+    </li>`
+  );
+
+  if (points.length !== 0) {
+    daysListTemplate = getDaysListTemplate(points);
+  }
+
   return (
     `<ul class="trip-days">
-      <li class="trip-days__item  day">
-        <div class="day__info">
-          <span class="day__counter">1</span>
-          <time class="day__date" datetime="2019-03-18">MAR 18</time>
-        </div>
-
-        <ul class="trip-events__list"></ul>
-      </li>
+      ${daysListTemplate}
     </ul>`
   );
 };
 
-class EventList extends AbstractComponent {
+class EventList extends AbstractSmartComponent {
+  constructor(points) {
+    super();
+    this._points = points;
+    this._pointsTemp = points;
+  }
+
   getTemplate() {
-    return createEventListTemplate();
+    return createEventListTemplate(this._points);
+  }
+
+  recoveryListeners() {
+  }
+
+  rerenderDefault() {
+    this._points = this._pointsTemp;
+
+    this.rerender();
+  }
+
+  rerenderEmpty() {
+    this._points = [];
+
+    this.rerender();
   }
 }
 

@@ -1,3 +1,4 @@
+import moment from 'moment';
 import EventEdit from '../components/event-edit';
 import EventComponent from '../components/event';
 import {render, replace, RenderPosition} from '../utils/render';
@@ -28,6 +29,13 @@ class PointController {
   }
 
   render(point) {
+    const dayContainerElement = this._container.querySelector(`.trip-events__list[date-time="${moment(point.dateFrom).format(`YYYY-MM-DD`)}"]`);
+    if (dayContainerElement) {
+      this._container = dayContainerElement;
+    } else {
+      this._container = this._container.querySelector(`.trip-events__list`);
+    }
+
     const oldEventComponent = this._eventComponent;
     const oldEventEditComponent = this._eventEditComponent;
 

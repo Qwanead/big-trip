@@ -9,7 +9,7 @@ import {MENU_ITEMS} from './mocks/menu';
 import {FILTERS} from './mocks/filters';
 import {render, RenderPosition} from './utils/render';
 
-const EVENT_COUNT = 4;
+const EVENT_COUNT = 14;
 
 const tripInfoElement = document.querySelector(`.trip-info`);
 const tripControlsElement = document.querySelector(`.trip-controls`);
