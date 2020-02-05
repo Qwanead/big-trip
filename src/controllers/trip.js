@@ -15,10 +15,10 @@ const renderEvents = (eventsListElement, points, onDataChange, onViewChange) => 
 };
 
 class TripController {
-  constructor(container) {
+  constructor(container, pointsModel) {
     this._renderedEvents = [];
-    this._points = [];
     this._container = container;
+    this._pointsModel = pointsModel;
 
     this._noPointsComponent = new NoPointsComponent();
     this._sortComponent = new SortComponent();
@@ -32,10 +32,10 @@ class TripController {
     this._sortComponent.setOnSortTypeChange(this._onSortingFormChange);
   }
 
-  render(points) {
-    this._points = points;
+  render() {
+    const points = this._pointsModel.getPoints();
     const containerElement = this._container.getElement();
-    this._eventListComponent = new EventListComponent(this._points);
+    this._eventListComponent = new EventListComponent(points);
 
 
     if (points.length === 0) {
@@ -48,26 +48,25 @@ class TripController {
 
     const eventsListElement = containerElement.querySelector(`.trip-days`);
 
-    this._renderedEvents = renderEvents(eventsListElement, this._points, this._onDataChange, this._onViewChange);
+    this._renderedEvents = renderEvents(eventsListElement, points, this._onDataChange, this._onViewChange);
   }
 
   _onSortingFormChange(sortType) {
     let sortedPoints = [];
+    const points = this._pointsModel.getPoints();
+
 
     switch (sortType) {
       case SortType.PRICE:
-        sortedPoints = this._points.slice().sort((a, b) => b.basePrice - a.basePrice);
+        sortedPoints = points.slice().sort((a, b) => b.basePrice - a.basePrice);
         break;
       case SortType.TIME:
-        sortedPoints = this._points.slice().sort((a, b) => a.duration - b.duration);
+        sortedPoints = points.slice().sort((a, b) => a.duration - b.duration);
         break;
       case SortType.DEFAULT:
-        sortedPoints = this._points;
+        sortedPoints = points;
         break;
     }
-
-    // eventsListElement.innerHTML = ``;
-    // this._eventListComponent.removeElement();
 
     if (sortType === SortType.DEFAULT) {
       this._eventListComponent.rerenderDefault();

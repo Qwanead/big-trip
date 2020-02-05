@@ -78,6 +78,7 @@ const getRandomDate = () => {
   const MAX_DIFF_MINUTE = 60;
 
   let dateFrom = new Date();
+  dateFrom.setDate(-1);
   dateFrom.setHours(getRandomInteger(0, MAX_DIFF_HOUR));
   dateFrom.setMinutes(getRandomInteger(0, MAX_DIFF_MINUTE));
 
@@ -117,6 +118,7 @@ const getPointMock = () => {
   const date = getRandomDate();
 
   const pointMock = {
+    id: String(new Date() + Math.random()),
     type: getRandomArrayItem(POINT_TYPES.concat(POINT_ACTIVITYS)),
     destination: getRandomArrayItem(DESTINATIONS),
     pictures: getPicturesList(),

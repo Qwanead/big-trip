@@ -17,8 +17,8 @@ const isEscKey = ({key}) =>
   key === KeyboardKey.ESCAPE || key === KeyboardKey.ESCAPE_IE;
 
 class PointController {
-  constructor(container, onDataChange, onViewChange) {
-    this._container = container;
+  constructor(containerElement, onDataChange, onViewChange) {
+    this._containerElement = containerElement;
     this._onDataChange = onDataChange;
     this._onViewChange = onViewChange;
 
@@ -29,11 +29,11 @@ class PointController {
   }
 
   render(point) {
-    const dayContainerElement = this._container.querySelector(`.trip-events__list[date-time="${moment(point.dateFrom).format(`YYYY-MM-DD`)}"]`);
+    const dayContainerElement = this._containerElement.querySelector(`.trip-events__list[date-time="${moment(point.dateFrom).format(`YYYY-MM-DD`)}"]`);
     if (dayContainerElement) {
-      this._container = dayContainerElement;
+      this._containerElement = dayContainerElement;
     } else {
-      this._container = this._container.querySelector(`.trip-events__list`);
+      this._containerElement = this._containerElement.querySelector(`.trip-events__list`);
     }
 
     const oldEventComponent = this._eventComponent;
@@ -67,7 +67,7 @@ class PointController {
     );
 
     if ((oldEventComponent === null) || (oldEventEditComponent === null)) {
-      render(this._container, this._eventComponent, RenderPosition.BEFOREEND);
+      render(this._containerElement, this._eventComponent, RenderPosition.BEFOREEND);
     } else {
       replace(this._eventComponent, oldEventComponent);
       replace(this._eventEditComponent, oldEventEditComponent);
