@@ -1,4 +1,4 @@
-import {getRandomArrayItem, getRandomInteger} from '../utils';
+import {getRandomArrayItem, getRandomInteger} from '../utils/common';
 import {POINT_TYPES, POINT_ACTIVITYS, DESTINATIONS} from '../const';
 
 const OFFERS = [
@@ -95,17 +95,17 @@ const getOffers = () => {
 
   let offers = [];
 
-  OFFERS.forEach((it, index) => {
-    offers[index] = Object.assign({}, it);
+  OFFERS.forEach((offer, index) => {
+    offers[index] = Object.assign({}, offer);
   });
 
   if (offersCount === 0) {
     return offers;
   }
 
-  offers.forEach((it) => {
+  offers.forEach((offer) => {
     if ((Math.random() > 0.5) && (offersCount !== 0)) {
-      it.isChecked = true;
+      offer.isChecked = true;
       offersCount--;
     }
   });
@@ -130,7 +130,7 @@ const getPointMock = () => {
   return pointMock;
 };
 
-const getPointMocks = (num) => {
+const getPointsMock = (num) => {
   const pointMocks = [];
 
   for (let i = 0; i < num; i++) {
@@ -140,4 +140,4 @@ const getPointMocks = (num) => {
   return pointMocks;
 };
 
-export {getPointMocks};
+export {getPointsMock};
