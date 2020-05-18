@@ -5,6 +5,7 @@ import {createSortTemplate} from './components/sort';
 import {createTripEditTemplate} from './components/trip-edit';
 import {createTripListTemplate} from './components/trip-list';
 import {createTripEventTemplate} from './components/trip-event';
+
 import {getPointMocks} from './mocks/point';
 import {MENU_ITEMS} from './mocks/menu';
 import {FILTERS} from './mocks/filters';

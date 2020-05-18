@@ -93,7 +93,6 @@ const isActivitys = (eventType) => POINT_ACTIVITYS.some((it) => it === eventType
 const createTripEventTemplate = ({type, destination, dateFrom, dateTo, basePrice, offers}) => {
   const offersChecked = offers.filter((it) => it.isChecked);
   const offersList = getOffersListTemplate(offersChecked);
-
   return (`
     <li class="trip-events__item">
       <div class="event">
