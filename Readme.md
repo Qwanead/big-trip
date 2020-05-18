@@ -1,12 +1,21 @@
 # Личный проект «Большое путешествие» [![Build status][travis-image]][travis-url]
 
+<<<<<<< HEAD
 * Студент: [Антон Рассадников](https://up.htmlacademy.ru/ecmascript/11/user/973785).
 * Наставник: `Неизвестно`.
+=======
+* Студент: [Антон Рассадников](https://up.htmlacademy.ru/ecmascript/10/user/973785).
+* Наставник: [Александр Мастеров](https://up.htmlacademy.ru/ecmascript/10/user/912463).
+>>>>>>> 69ed4b39682a38034add21378f7bb50e241734e1
 
 ---
 
 _Не удаляйте и не изменяйте папки и файлы:_
+<<<<<<< HEAD
 _`.editorconfig`, `.gitattributes`, `.travis.yml`._
+=======
+_`.editorconfig`, `.gitattributes`, `.gitignore`, `.travis.yml`, `package.json`._
+>>>>>>> 69ed4b39682a38034add21378f7bb50e241734e1
 
 ---
 
@@ -48,5 +57,5 @@ git clone SSH-адрес_вашего_форка
 
 Репозиторий создан для обучения на интенсивном онлайн‑курсе «[Профессиональный JavaScript, уровень 2](https://htmlacademy.ru/intensive/ecmascript)» от [HTML Academy](https://htmlacademy.ru).
 
-[travis-image]: https://travis-ci.com/htmlacademy-ecmascript/973785-big-trip-11.svg?branch=master
-[travis-url]: https://travis-ci.com/htmlacademy-ecmascript/973785-big-trip-11
+[travis-image]: https://travis-ci.com/htmlacademy-ecmascript/973785-big-trip-10.svg?branch=master
+[travis-url]: https://travis-ci.com/htmlacademy-ecmascript/973785-big-trip-10
