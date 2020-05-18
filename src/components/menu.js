@@ -16,12 +16,11 @@ const createMenuTemplate = (menuItems) => {
 class Menu {
   constructor(menuItems) {
     this._element = null;
-    this.menuItems = menuItems;
-
+    this._menuItems = menuItems;
   }
 
   getTemplate() {
-    return createMenuTemplate(this.menuItems);
+    return createMenuTemplate(this._menuItems);
   }
 
   getElement() {
