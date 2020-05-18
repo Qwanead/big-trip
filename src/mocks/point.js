@@ -125,6 +125,7 @@ const getPointMock = () => {
     dateTo: date.dateTo,
     basePrice: getRandomInteger(1, 10) * 100 + getRandomInteger(1, 10) * 10,
     offers: getOffers(),
+    isFavorite: getRandomInteger(0, 1) === 1,
     get duration() {
       return this.dateFrom - this.dateTo;
     },

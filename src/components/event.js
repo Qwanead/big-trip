@@ -1,7 +1,6 @@
 import {formatCase, formatNumber, generateTemplates} from '../utils/common';
-
-import AbstractComponent from './abstract-component';
 import {POINT_ACTIVITYS} from '../const';
+import AbstractSmartComponent from './abstract-smart-component';
 
 const MS_IN_MINUTE = 1000 * 60;
 const MS_IN_HOUR = MS_IN_MINUTE * 60;
@@ -132,17 +131,23 @@ const createEventTemplate = ({type, destination, dateFrom, dateTo, basePrice, of
   );
 };
 
-class Event extends AbstractComponent {
+class Event extends AbstractSmartComponent {
   constructor(point) {
     super();
     this._point = point;
+    this._onRollupButtonClick = null;
   }
 
   getTemplate() {
     return createEventTemplate(this._point);
   }
 
+  recoveryListeners() {
+    this.setOnRollupButtonClick(this._onRollupButtonClick);
+  }
+
   setOnRollupButtonClick(handler) {
+    this._onRollupButtonClick = handler;
     this.getElement().querySelector(`.event__rollup-btn`)
       .addEventListener(`click`, handler);
   }

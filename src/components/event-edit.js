@@ -1,6 +1,6 @@
 import {POINT_TYPES, POINT_ACTIVITYS, DESTINATIONS} from '../const';
 import {formatCase, formatNumber, generateTemplates} from '../utils/common';
-import AbstractComponent from './abstract-component';
+import AbstractSmartComponent from './abstract-smart-component';
 
 const getEventTypeTemplate = (eventType) => {
   return (
@@ -50,7 +50,10 @@ const getOptionsList = generateTemplates(getOptionTemplate);
 const getOffersList = generateTemplates(getOfferTemplate);
 const getPicturesList = generateTemplates(getPictureTemplate);
 
-const createEventEditTemplate = ({type, destination, basePrice, offers, dateFrom, dateTo, description, pictures}) => {
+const createEventEditTemplate = (point, option) => {
+  const {destination, basePrice, offers, dateFrom, dateTo, description, pictures, isFavorite} = point;
+  const {type} = option;
+
   const offersList = getOffersList(offers);
   const picturesList = getPicturesList(pictures);
 
@@ -113,6 +116,22 @@ const createEventEditTemplate = ({type, destination, basePrice, offers, dateFrom
 
         <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
         <button class="event__reset-btn" type="reset">Cancel</button>
+        <input id="event-favorite-1"
+          class="event__favorite-checkbox
+          visually-hidden"
+          type="checkbox"
+          name="event-favorite"
+          ${isFavorite ? `checked` : ``}>
+        <label class="event__favorite-btn" for="event-favorite-1">
+          <span class="visually-hidden">Add to favorite</span>
+          <svg class="event__favorite-icon" width="28" height="28" viewBox="0 0 28 28">
+            <path d="M14 21l-8.22899 4.3262 1.57159-9.1631L.685209 9.67376 9.8855 8.33688 14 0l4.1145 8.33688 9.2003 1.33688-6.6574 6.48934 1.5716 9.1631L14 21z"/>
+          </svg>
+        </label>
+
+        <button class="event__rollup-btn" type="button">
+          <span class="visually-hidden">Open event</span>
+        </button>
       </header>
       <section class="event__details">
 
@@ -139,18 +158,55 @@ const createEventEditTemplate = ({type, destination, basePrice, offers, dateFrom
   );
 };
 
-class EventEdit extends AbstractComponent {
+class EventEdit extends AbstractSmartComponent {
   constructor(point) {
     super();
     this._point = point;
+    this._type = point.type;
+
+    this._onFormSubmit = null;
+    this._onFavoriteButtonClick = null;
+
+    this._subscribeOnEvents();
   }
 
   getTemplate() {
-    return createEventEditTemplate(this._point);
+    return createEventEditTemplate(this._point, {type: this._type});
+  }
+
+  recoveryListeners() {
+    this._subscribeOnEvents();
+    this.setOnFormSubmit(this._onFormSubmit);
+    this.setOnFavoriteButtonClick(this._onFavoriteButtonClick);
   }
 
   setOnFormSubmit(handler) {
+    this._onFormSubmit = handler;
     this.getElement().addEventListener(`submit`, handler);
+  }
+
+  setOnFavoriteButtonClick(handler) {
+    const favoriteButton = this.getElement().querySelector(`.event__favorite-btn`);
+    this._onFavoriteButtonClick = handler;
+    favoriteButton.addEventListener(`click`, handler);
+  }
+
+  reset() {
+    this._type = this._point.type;
+
+    this.rerender();
+  }
+
+  _subscribeOnEvents() {
+    const typeWrapperElement = this.getElement().querySelector(`.event__type-wrapper`);
+
+    typeWrapperElement.addEventListener(`change`, (evt) => {
+      if (evt.target.value !== `on`) {
+        this._type = evt.target.value;
+
+        this.rerender();
+      }
+    });
   }
 }
 
