@@ -1,13 +1,14 @@
-import TripInfoComponent from './components/trip-info';
-import TripCostComponent from './components/trip-cost';
-import MenuComponent from './components/menu';
-import FilterComponent from './components/filter';
+import {RenderPosition, render} from './utils/render';
+
 import EventsComponent from './components/events';
-import TripController from './controllers/trip';
-import {getPointsMock} from './mocks/point';
-import {MENU_ITEMS} from './mocks/menu';
 import {FILTERS} from './mocks/filters';
-import {render, RenderPosition} from './utils/render';
+import FilterComponent from './components/filter';
+import {MENU_ITEMS} from './mocks/menu';
+import MenuComponent from './components/menu';
+import TripController from './controllers/trip';
+import TripCostComponent from './components/trip-cost';
+import TripInfoComponent from './components/trip-info';
+import {getPointsMock} from './mocks/point';
 
 const EVENT_COUNT = 4;
 

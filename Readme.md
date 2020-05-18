@@ -1,12 +1,21 @@
 # Личный проект «Большое путешествие» [![Build status][travis-image]][travis-url]
 
+<<<<<<< HEAD
+* Студент: [Антон Рассадников](https://up.htmlacademy.ru/ecmascript/11/user/973785).
+* Наставник: `Неизвестно`.
+=======
 * Студент: [Антон Рассадников](https://up.htmlacademy.ru/ecmascript/10/user/973785).
 * Наставник: [Александр Мастеров](https://up.htmlacademy.ru/ecmascript/10/user/912463).
+>>>>>>> 69ed4b39682a38034add21378f7bb50e241734e1
 
 ----
 
 _Не удаляйте и не изменяйте папки и файлы:_
+<<<<<<< HEAD
+_`.editorconfig`, `.gitattributes`, `.travis.yml`._
+=======
 _`.editorconfig`, `.gitattributes`, `.gitignore`, `.travis.yml`, `package.json`._
+>>>>>>> 69ed4b39682a38034add21378f7bb50e241734e1
 
 ---
 
