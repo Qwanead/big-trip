@@ -1,5 +1,7 @@
 import {MONTH_NAMES} from '../const';
-import {formatNumber, createElement} from '../utils';
+import {formatNumber} from '../utils/common';
+import AbstractComponent from './abstract-component';
+
 
 const ROUTE_INFO_LENGTH = 3;
 
@@ -34,7 +36,7 @@ const getTripRoute = (points) => {
     return `${beginPoint} &mdash; ... &mdash; ${endPoint}`;
   }
 
-  return points.map((it) => it.destination).join(` &mdash; `);
+  return points.map((point) => point.destination).join(` &mdash; `);
 };
 
 const createTripInfoTemplate = (points) => {
@@ -53,22 +55,14 @@ const createTripInfoTemplate = (points) => {
   );
 };
 
-class TripInfo {
+class TripInfo extends AbstractComponent {
   constructor(points) {
-    this._element = null;
+    super();
     this._points = points;
   }
 
   getTemplate() {
     return createTripInfoTemplate(this._points);
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
   }
 
   removeElement() {

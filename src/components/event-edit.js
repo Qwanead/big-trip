@@ -1,5 +1,6 @@
 import {POINT_TYPES, POINT_ACTIVITYS, DESTINATIONS} from '../const';
-import {formatCase, formatNumber, generateTemplates, createElement} from '../utils';
+import {formatCase, formatNumber, generateTemplates} from '../utils/common';
+import AbstractComponent from './abstract-component';
 
 const getEventTypeTemplate = (eventType) => {
   return (
@@ -48,7 +49,6 @@ const getEventTypeList = generateTemplates(getEventTypeTemplate);
 const getOptionsList = generateTemplates(getOptionTemplate);
 const getOffersList = generateTemplates(getOfferTemplate);
 const getPicturesList = generateTemplates(getPictureTemplate);
-
 
 const createEventEditTemplate = ({type, destination, basePrice, offers, dateFrom, dateTo, description, pictures}) => {
   const offersList = getOffersList(offers);
@@ -139,9 +139,9 @@ const createEventEditTemplate = ({type, destination, basePrice, offers, dateFrom
   );
 };
 
-class EventEdit {
+class EventEdit extends AbstractComponent {
   constructor(point) {
-    this._element = null;
+    super();
     this._point = point;
   }
 
@@ -149,19 +149,7 @@ class EventEdit {
     return createEventEditTemplate(this._point);
   }
 
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
-  }
-
-  setFormSubmitHandler(handler) {
+  setOnEventFormSubmit(handler) {
     this.getElement().addEventListener(`submit`, handler);
   }
 }

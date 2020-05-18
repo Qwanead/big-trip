@@ -1,5 +1,6 @@
-import {createElement, formatCase, formatNumber, generateTemplates} from '../utils';
+import {formatCase, formatNumber, generateTemplates} from '../utils/common';
 
+import AbstractComponent from './abstract-component';
 import {POINT_ACTIVITYS} from '../const';
 
 const MS_IN_MINUTE = 1000 * 60;
@@ -91,10 +92,10 @@ const getOffersListTemplate = (offersChecked) => {
   return getOffersTemplates(offersCheckedShort);
 };
 
-const isActivitys = (eventType) => POINT_ACTIVITYS.some((it) => it === eventType);
+const isActivitys = (eventType) => POINT_ACTIVITYS.some((activity) => activity === eventType);
 
 const createEventTemplate = ({type, destination, dateFrom, dateTo, basePrice, offers}) => {
-  const offersChecked = offers.filter((it) => it.isChecked);
+  const offersChecked = offers.filter((offer) => offer.isChecked);
   const offersList = getOffersListTemplate(offersChecked);
 
   return (
@@ -131,9 +132,9 @@ const createEventTemplate = ({type, destination, dateFrom, dateTo, basePrice, of
   );
 };
 
-class Event {
+class Event extends AbstractComponent {
   constructor(point) {
-    this._element = null;
+    super();
     this._point = point;
   }
 
@@ -141,19 +142,7 @@ class Event {
     return createEventTemplate(this._point);
   }
 
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
-  }
-
-  setRollupButtonClickHandler(handler) {
+  setOnRollupButtonClick(handler) {
     this.getElement().querySelector(`.event__rollup-btn`)
       .addEventListener(`click`, handler);
   }
