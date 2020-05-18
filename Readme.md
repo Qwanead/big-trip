@@ -3,7 +3,7 @@
 * Студент: [Антон Рассадников](https://up.htmlacademy.ru/ecmascript/10/user/973785).
 * Наставник: [Александр Мастеров](https://up.htmlacademy.ru/ecmascript/10/user/912463).
 
----
+----
 
 _Не удаляйте и не изменяйте папки и файлы:_
 _`.editorconfig`, `.gitattributes`, `.gitignore`, `.travis.yml`, `package.json`._
