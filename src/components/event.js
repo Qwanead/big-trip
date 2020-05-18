@@ -1,70 +1,34 @@
+import moment from 'moment';
 import {formatCase, formatNumber, generateTemplates} from '../utils/common';
 import {POINT_ACTIVITYS} from '../const';
 import AbstractSmartComponent from './abstract-smart-component';
 
-const MS_IN_MINUTE = 1000 * 60;
-const MS_IN_HOUR = MS_IN_MINUTE * 60;
-const MS_IN_DAY = MS_IN_HOUR * 24;
+const MINUTES_IN_HOUR = 60;
+const HOURS_IN_DAY = 24;
+const MINUTES_IN_DAY = HOURS_IN_DAY * MINUTES_IN_HOUR;
 const OFFERS_COUNT = 3;
 
-const convertDateToTime = (date) => {
-  let hour = formatNumber(date.getHours());
-  let minute = formatNumber(date.getMinutes());
-
-  return `${hour}:${minute}`;
-};
+const convertDateToTime = (date) => moment(date).format(`HH:mm`);
 
 const calculateDiffDate = (beginDate, endDate) => {
 
-  const convertMs = (ms, target = `minute`) => {
-    let unit;
-    let unitInMs;
-    let result = {};
+  const minutesDiff = moment(endDate).diff(moment(beginDate), `minutes`);
+  const hoursDiff = moment(endDate).diff(moment(beginDate), `hours`);
+  const daysDiff = moment(endDate).diff(moment(beginDate), `days`);
 
-    switch (target) {
-      case `minute`:
-        unit = `M`;
-        unitInMs = MS_IN_MINUTE;
-        break;
-      case `hour`:
-        unit = `H`;
-        unitInMs = MS_IN_HOUR;
-        break;
-      case `day`:
-        unit = `D`;
-        unitInMs = MS_IN_DAY;
-        break;
-    }
+  const day = daysDiff;
+  const hour = hoursDiff - day * HOURS_IN_DAY;
+  const minute = minutesDiff - day * MINUTES_IN_DAY - hour * MINUTES_IN_HOUR;
 
-    result.value = Math.floor(ms / unitInMs);
-
-    if (result.value < 10) {
-      result.string = `0` + result.value + unit;
-    } else {
-      result.string = result.value + unit;
-    }
-
-    return result;
-  };
-
-  const diffDateInMs = endDate - beginDate;
-
-  if (diffDateInMs < MS_IN_HOUR) {
-    return convertMs(diffDateInMs).string;
+  if (minutesDiff < MINUTES_IN_HOUR) {
+    return `${formatNumber(minute)}M`;
   }
 
-  if (diffDateInMs < MS_IN_DAY) {
-    const hour = convertMs(diffDateInMs, `hour`);
-    const minute = convertMs(diffDateInMs - hour.value * MS_IN_HOUR);
-
-    return `${hour.string} ${minute.string}`;
+  if (hoursDiff < HOURS_IN_DAY) {
+    return `${formatNumber(hour)}H ${formatNumber(minute)}M`;
   }
 
-  const day = convertMs(diffDateInMs, `day`);
-  const hour = convertMs(diffDateInMs - day.value * MS_IN_DAY, `hour`);
-  const minute = convertMs(diffDateInMs - day.value * MS_IN_DAY - hour.value * MS_IN_HOUR);
-
-  return `${day.string} ${hour.string} ${minute.string}`;
+  return `${formatNumber(day)}D ${formatNumber(hour)}H ${formatNumber(minute)}M`;
 };
 
 const getOfferTemplate = ({title, price}) => {
@@ -146,10 +110,10 @@ class Event extends AbstractSmartComponent {
     this.setOnRollupButtonClick(this._onRollupButtonClick);
   }
 
-  setOnRollupButtonClick(handler) {
-    this._onRollupButtonClick = handler;
+  setOnRollupButtonClick(onClick) {
+    this._onRollupButtonClick = onClick;
     this.getElement().querySelector(`.event__rollup-btn`)
-      .addEventListener(`click`, handler);
+      .addEventListener(`click`, onClick);
   }
 }
 

@@ -17,9 +17,9 @@ const renderEvents = (eventsListElement, points, onDataChange, onViewChange) => 
 class TripController {
   constructor(container) {
     this._renderedEvents = [];
+    this._points = [];
     this._container = container;
 
-    this._points = null;
     this._noPointsComponent = new NoPointsComponent();
     this._sortComponent = new SortComponent();
     this._eventListComponent = new EventListComponent();
@@ -29,22 +29,22 @@ class TripController {
     this._onViewChange = this._onViewChange.bind(this);
 
 
-    this._sortComponent.setOnSortingFormChange(this._onSortingFormChange);
+    this._sortComponent.setOnSortTypeChange(this._onSortingFormChange);
   }
 
   render(points) {
     this._points = points;
-    const container = this._container.getElement();
+    const containerElement = this._container.getElement();
 
     if (points.length === 0) {
-      render(container, this._noPointsComponent, RenderPosition.BEFOREEND);
+      render(containerElement, this._noPointsComponent, RenderPosition.BEFOREEND);
       return;
     }
 
-    render(container, this._sortComponent, RenderPosition.BEFOREEND);
-    render(container, this._eventListComponent, RenderPosition.BEFOREEND);
+    render(containerElement, this._sortComponent, RenderPosition.BEFOREEND);
+    render(containerElement, this._eventListComponent, RenderPosition.BEFOREEND);
 
-    const eventsListElement = container.querySelector(`.trip-events__list`);
+    const eventsListElement = containerElement.querySelector(`.trip-events__list`);
 
     this._renderedEvents = renderEvents(eventsListElement, this._points, this._onDataChange, this._onViewChange);
   }
@@ -66,7 +66,7 @@ class TripController {
     }
 
     eventsListElement.innerHTML = ``;
-    renderEvents(eventsListElement, sortedPoints, this._onDataChange);
+    this._renderedEvents = renderEvents(eventsListElement, sortedPoints, this._onDataChange, this._onViewChange);
   }
 
   _onDataChange(pointController, oldData, newData) {

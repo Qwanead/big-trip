@@ -1,5 +1,4 @@
-import {MONTH_NAMES} from '../const';
-import {formatNumber} from '../utils/common';
+import moment from 'moment';
 import AbstractComponent from './abstract-component';
 
 
@@ -8,8 +7,8 @@ const ROUTE_INFO_LENGTH = 3;
 const getTripDate = (points) => {
 
   const convertDate = (date) => {
-    const month = MONTH_NAMES[date.getMonth()].slice(0, 3).toUpperCase();
-    const day = formatNumber(date.getDate());
+    const month = moment(date).format(`MMM`).toUpperCase();
+    const day = moment(date).format(`DD`);
 
     return {day, month};
   };
