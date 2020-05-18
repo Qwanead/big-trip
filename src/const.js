@@ -36,4 +36,10 @@ const MONTH_NAMES = [
   `December`,
 ];
 
-export {POINT_TYPES, POINT_ACTIVITYS, DESTINATIONS, MONTH_NAMES};
+const SortType = {
+  PRICE: `sort-price`,
+  TIME: `sort-time`,
+  DEFAULT: `sort-event`,
+};
+
+export {POINT_TYPES, POINT_ACTIVITYS, DESTINATIONS, MONTH_NAMES, SortType};
