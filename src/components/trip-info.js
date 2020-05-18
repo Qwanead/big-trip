@@ -37,43 +37,30 @@ const getTripRoute = (points) => {
   return points.map((it) => it.destination).join(` &mdash; `);
 };
 
-const calculateEventPrice = (basePrice, offers) => {
-  const offersChecked = offers.filter((it) => it.isChecked);
-  const offersPrice = offersChecked.reduce((result, it) => it.price + result, 0);
-
-  return offersPrice + basePrice;
-};
-
-const calculateTripCost = (points) =>
-  points.reduce((result, it) =>
-    result + calculateEventPrice(it.basePrice, it.offers), 0);
-
 const createTripInfoTemplate = (points) => {
+  if (points.length === 0) {
+    return ` `;
+  }
+
   const tripRoute = getTripRoute(points);
   const tripDate = getTripDate(points);
-  const tripCost = calculateTripCost(points);
 
   return (
     `<div class="trip-info__main">
       <h1 class="trip-info__title">${tripRoute}</h1>
       <p class="trip-info__dates">${tripDate}</p>
-    </div>
-
-    <p class="trip-info__cost">
-      Total: &euro;&nbsp;<span class="trip-info__cost-value">${tripCost}</span>
-    </p>`
+    </div>`
   );
 };
 
 class TripInfo {
   constructor(points) {
     this._element = null;
-    this.points = points;
-
+    this._points = points;
   }
 
   getTemplate() {
-    return createTripInfoTemplate(this.points);
+    return createTripInfoTemplate(this._points);
   }
 
   getElement() {
