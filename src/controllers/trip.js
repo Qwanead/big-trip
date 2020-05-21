@@ -1,8 +1,9 @@
-import SortComponent from '../components/sort';
+import {RenderPosition, render} from '../utils/render';
+
 import EventListComponent from '../components/event-list';
 import NoPointsComponent from '../components/no-points';
 import PointController from './point';
-import {render, RenderPosition} from '../utils/render';
+import SortComponent from '../components/sort';
 import {SortType} from '../const';
 
 const renderEvents = (eventsListElement, points, onDataChange, onViewChange) => {

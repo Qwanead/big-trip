@@ -1,6 +1,6 @@
-import moment from 'moment';
-import {generateTemplates} from '../utils/common';
 import AbstractSmartComponent from './abstract-smart-component';
+import {generateTemplates} from '../utils/common';
+import moment from 'moment';
 
 const getDayTemplate = ({day, dayNumber}) => {
   return (
@@ -25,7 +25,7 @@ const getDaysListTemplate = (points) => {
     DaySet.add(moment(point.dateFrom).format(`YYYY-MM-DD`))
   );
 
-  let days = Array.from(DaySet).sort();
+  let days = Array.from(DaySet).sort((a, b) => a - b);
   const daysWithNumbers = [];
 
   days.forEach((day, index, arr) => {

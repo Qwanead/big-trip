@@ -13,9 +13,11 @@ const getRandomArrayItem = (arr) => {
 
 const formatCase = (str) => str[0].toUpperCase() + str.slice(1);
 
+const formatString = (str) => str.replace(/ /g, `-`).toLowerCase();
+
 const formatNumber = (number) => number.toString().padStart(NUMBER_LENGTH, `0`);
 
 const generateTemplates = (getTemplate) =>
   (arr) => arr.reduce((result, it) => result + getTemplate(it), ``);
 
-export {getRandomInteger, getRandomArrayItem, formatCase, formatNumber, generateTemplates};
+export {getRandomInteger, getRandomArrayItem, formatCase, formatNumber, generateTemplates, formatString};

@@ -1,4 +1,4 @@
-class Tasks {
+class Points {
   constructor() {
     this._points = [];
   }
@@ -24,4 +24,4 @@ class Tasks {
   }
 }
 
-export default Tasks;
+export default Points;
