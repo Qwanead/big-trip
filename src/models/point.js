@@ -1,32 +1,46 @@
-import Offers from './offers';
+const formatString = (str) => str.replace(/ /g, `-`).toLowerCase();
+
+const convertOffers = (type, offersChecked, allOffers) => {
+  const targetOffers = allOffers.filter((it) => it.type === type)[0].offers;
+  const temp = targetOffers.filter((it) => offersChecked.some((elem) => elem.type === it.type));
+  console.log('target');
+  console.log(targetOffers);
+  console.log('filter');
+  console.log(temp);
+  return targetOffers;
+};
 
 class Point {
-  constructor(data) {
-    this.id = data.id;
-    this.type = data.type;
-    this.destination = data.destination.name;
-    this.pictures = data.destination.pictures;
-    this.description = data.destination.description;
-    this.dateFrom = new Date(data.date_from);
-    this.dateTo = new Date(data.date_to);
-    this.basePrice = data.base_price;
-    this.offers = data.offers;
-    this.isFavorite = Boolean(data.is_favorite);
+  constructor(pointData, allOffers) {
+    this.id = pointData.id;
+    this.type = pointData.type;
+    this.destination = pointData.destination.name;
+    this.pictures = pointData.destination.pictures;
+    this.description = pointData.destination.description;
+    this.dateFrom = new Date(pointData.date_from);
+    this.dateTo = new Date(pointData.date_to);
+    this.basePrice = pointData.base_price;
+    this.offersChecked = pointData.offers;
+    this.allOffers = allOffers;
+    this.offers = pointData.offers;
+    this.isFavorite = Boolean(pointData.is_favorite);
     this.duration = this.dateFrom - this.dateTo;
+
+    convertOffers(this.type, this.offersChecked, this.allOffers);
   }
 
-  static parsePoint(data) {
-    return new Point(data);
+  static parsePoint(pointData, allOffers) {
+    return new Point(pointData, allOffers);
   }
 
-  static parsePoints(PointsData) {
-    return PointsData.map(Point.parsePoint);
+  static parsePoints({response: PointsData, allOffers}) {
+    return PointsData.map((it) => Point.parsePoint(it, allOffers));
   }
 
-  setOffers() {
-    const offersModel = new Offers();
-    console.log(offersModel.getOffers());
-  }
+  // setOffers() {
+  //   const offersModel = new Offers();
+  //   console.log(offersModel.getOffers());
+  // }
 }
 
 export default Point;

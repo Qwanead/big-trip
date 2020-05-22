@@ -26,24 +26,31 @@ const eventsComponent = new EventsComponent();
 const pointsModel = new PointsModel();
 const tripComponent = new TripController(eventsComponent, pointsModel);
 const api = new API(AUTHORIZATION);
+// let allOffers = [];
 
 render(menuHeaderElement, new MenuComponent(MENU_ITEMS), RenderPosition.AFTER);
 render(tripControlsElement, new FilterComponent(FILTERS), RenderPosition.BEFOREEND);
 render(eventsContainerElement, eventsComponent, RenderPosition.BEFOREEND);
 
-api.getOffers().
-then((offersList) => {
-  const offers = Array.from(offersList);
-  console.log(offers);
-});
-
-api.getTasks()
+api.getOffers()
+  // .then((offersList) => {
+  //   allOffers = Array.from(offersList);
+  // })
+  .then((allOffers) => api.getTasks(allOffers))
   .then((points) => {
     pointsModel.setPoints(points);
     render(tripInfoElement, new TripInfoComponent(points), RenderPosition.AFTERBEGIN);
     render(tripInfoElement, new TripCostComponent(points), RenderPosition.BEFOREEND);
     tripComponent.render();
   });
+
+// api.getTasks()
+//   .then((points) => {
+//     pointsModel.setPoints(points);
+//     render(tripInfoElement, new TripInfoComponent(points), RenderPosition.AFTERBEGIN);
+//     render(tripInfoElement, new TripCostComponent(points), RenderPosition.BEFOREEND);
+//     tripComponent.render();
+//   });
 
 
 // pointsModel.setPoints(points);
