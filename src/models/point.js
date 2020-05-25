@@ -1,13 +1,28 @@
 const formatString = (str) => str.replace(/ /g, `-`).toLowerCase();
 
 const convertOffers = (type, offersChecked, allOffers) => {
-  const targetOffers = allOffers.filter((it) => it.type === type)[0].offers;
-  const temp = targetOffers.filter((it) => offersChecked.some((elem) => elem.type === it.type));
-  console.log('target');
-  console.log(targetOffers);
-  console.log('filter');
-  console.log(temp);
-  return targetOffers;
+  const resultOffers = allOffers.filter((it) => it.type === type)[0].offers.slice();
+  for (let i = 0; i < resultOffers.length; i++) {
+    resultOffers[i] = Object.assign({}, resultOffers[i]);
+  }
+
+  resultOffers.forEach((resultOffer) => {
+    resultOffer.shortTitle = formatString(resultOffer.title);
+    resultOffer.isChecked = false;
+
+    offersChecked.some((offerChecked) => {
+      if (offerChecked.title === resultOffer.title) {
+        resultOffer.price = offerChecked.price;
+        resultOffer.isChecked = true;
+
+        return true;
+      }
+
+      return false;
+    });
+  });
+
+  return resultOffers;
 };
 
 class Point {
@@ -22,11 +37,9 @@ class Point {
     this.basePrice = pointData.base_price;
     this.offersChecked = pointData.offers;
     this.allOffers = allOffers;
-    this.offers = pointData.offers;
+    this.offers = convertOffers(pointData.type, pointData.offers, allOffers);
     this.isFavorite = Boolean(pointData.is_favorite);
     this.duration = this.dateFrom - this.dateTo;
-
-    convertOffers(this.type, this.offersChecked, this.allOffers);
   }
 
   static parsePoint(pointData, allOffers) {
@@ -36,11 +49,6 @@ class Point {
   static parsePoints({response: PointsData, allOffers}) {
     return PointsData.map((it) => Point.parsePoint(it, allOffers));
   }
-
-  // setOffers() {
-  //   const offersModel = new Offers();
-  //   console.log(offersModel.getOffers());
-  // }
 }
 
 export default Point;
