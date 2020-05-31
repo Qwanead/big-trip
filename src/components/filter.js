@@ -1,5 +1,28 @@
 import {formatCase, generateTemplates} from '../utils/common';
+
 import AbstractComponent from './abstract-component';
+
+// const FILTERS = [
+//   {
+//     title: `everything`,
+//     isChecked: true,
+//   },
+//   {
+//     title: `future`,
+//     isChecked: false,
+//   },
+//   {
+//     title: `past`,
+//     isChecked: false,
+//   },
+// ];
+
+const FILTER_ID_PREFIX = `filter-`;
+
+const getFilterNameById = (id) => {
+  return id.substring(FILTER_ID_PREFIX.length);
+};
+
 
 const getFilterTemplate = ({title, isChecked}) => {
   return (
@@ -38,6 +61,13 @@ class Filter extends AbstractComponent {
 
   getTemplate() {
     return createFilterTemplate(this._filters);
+  }
+
+  setOnFilterTypeChange(onChange) {
+    this.getElement().addEventListener(`change`, (evt) => {
+      const filterName = getFilterNameById(evt.target.id);
+      onChange(filterName);
+    });
   }
 }
 

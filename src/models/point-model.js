@@ -25,8 +25,16 @@ const convertOffers = (type, offersChecked, allOffers) => {
   return resultOffers;
 };
 
+const addShortTitle = (allOffers) => {
+  allOffers.forEach((allOffer) => {
+    allOffer.offers.forEach((offer) => {
+      offer.shortTitle = formatString(offer.title);
+    });
+  });
+};
+
 class Point {
-  constructor(pointData, allOffers) {
+  constructor(pointData, allOffers, destinations) {
     this.id = pointData.id;
     this.type = pointData.type;
     this.destination = pointData.destination.name;
@@ -40,14 +48,17 @@ class Point {
     this.offers = convertOffers(pointData.type, pointData.offers, allOffers);
     this.isFavorite = Boolean(pointData.is_favorite);
     this.duration = this.dateFrom - this.dateTo;
+    this.destinations = destinations;
+
+    addShortTitle(this.allOffers);
   }
 
-  static parsePoint(pointData, allOffers) {
-    return new Point(pointData, allOffers);
+  static parsePoint(pointData, allOffers, destinations) {
+    return new Point(pointData, allOffers, destinations);
   }
 
-  static parsePoints({response: PointsData, allOffers}) {
-    return PointsData.map((it) => Point.parsePoint(it, allOffers));
+  static parsePoints({response: PointsData, allOffers, destinations}) {
+    return PointsData.map((it) => Point.parsePoint(it, allOffers, destinations));
   }
 }
 

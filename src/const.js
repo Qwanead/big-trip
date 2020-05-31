@@ -14,13 +14,6 @@ const POINT_ACTIVITYS = [
   `restaurant`,
 ];
 
-const DESTINATIONS = [
-  `Amsterdam`,
-  `Geneva`,
-  `Chamonix`,
-  `Saint Petersburg`,
-];
-
 const FilterType = {
   EVERYTHING: `everything`,
   FUTURE: `future`,
@@ -33,4 +26,4 @@ const SortType = {
   DEFAULT: `sort-event`,
 };
 
-export {POINT_TYPES, POINT_ACTIVITYS, DESTINATIONS, FilterType, SortType};
+export {POINT_TYPES, POINT_ACTIVITYS, FilterType, SortType};

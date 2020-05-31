@@ -1,7 +1,8 @@
-import moment from 'moment';
-import EventEdit from '../components/event-edit';
+import {RenderPosition, remove, render, replace} from '../utils/render';
+
 import EventComponent from '../components/event';
-import {render, replace, RenderPosition} from '../utils/render';
+import EventEdit from '../components/event-edit';
+import moment from 'moment';
 
 const KeyboardKey = {
   ESCAPE: `Esc`,
@@ -26,14 +27,17 @@ class PointController {
 
     this._eventComponent = null;
     this._eventEditComponent = null;
+    this._onDocumentKeyDown = this._onDocumentKeyDown.bind(this);
   }
 
   render(point) {
-    const dayContainerElement = this._containerElement.querySelector(`.trip-events__list[date-time="${moment(point.dateFrom).format(`YYYY-MM-DD`)}"]`);
-    if (dayContainerElement) {
-      this._containerElement = dayContainerElement;
-    } else {
-      this._containerElement = this._containerElement.querySelector(`.trip-events__list`);
+    if (this._containerElement) {
+      const dayContainerElement = this._containerElement.querySelector(`.trip-events__list[date-time="${moment(point.dateFrom).format(`YYYY-MM-DD`)}"]`);
+      if (dayContainerElement) {
+        this._containerElement = dayContainerElement;
+      } else {
+        this._containerElement = this._containerElement.querySelector(`.trip-events__list`);
+      }
     }
 
     const oldEventComponent = this._eventComponent;
@@ -42,23 +46,31 @@ class PointController {
     this._eventComponent = new EventComponent(point);
     this._eventEditComponent = new EventEdit(point);
 
-    const onDocumentKeyDown = (evt) => {
-      if (isEscKey(evt)) {
-        this._replaceEditToEvent();
-        document.removeEventListener(`keydown`, onDocumentKeyDown);
-      }
-    };
-
     const onRollupButtonClick = () => {
       this._replaceEventToEdit();
 
-      document.addEventListener(`keydown`, onDocumentKeyDown);
+      document.addEventListener(`keydown`, this._onDocumentKeyDown);
     };
 
     const onFormSubmit = (evt) => {
       evt.preventDefault();
+      const newData = this._eventEditComponent.getData();
+      this._onDataChange(this, point, Object.assign({}, point, newData));
+      document.removeEventListener(`keydown`, this._onDocumentKeyDown);
+      this._eventEditComponent.getData();
       this._replaceEditToEvent();
     };
+
+    this._eventEditComponent.setOnDeleteButtonClick(() => {
+      this._onDataChange(this, point, null);
+
+      document.removeEventListener(`keydown`, this._onDocumentKeyDown);
+    });
+
+    this._eventEditComponent.setOnEditCloseButtonClick(() => {
+      this._replaceEditToEvent();
+      document.removeEventListener(`keydown`, this._onDocumentKeyDown);
+    });
 
     this._eventComponent.setOnRollupButtonClick(onRollupButtonClick);
     this._eventEditComponent.setOnFormSubmit(onFormSubmit);
@@ -71,6 +83,13 @@ class PointController {
     } else {
       replace(this._eventComponent, oldEventComponent);
       replace(this._eventEditComponent, oldEventEditComponent);
+    }
+  }
+
+  _onDocumentKeyDown(evt) {
+    if (isEscKey(evt)) {
+      this._replaceEditToEvent();
+      document.removeEventListener(`keydown`, this._onDocumentKeyDown);
     }
   }
 
@@ -91,6 +110,12 @@ class PointController {
     replace(this._eventComponent, this._eventEditComponent);
     this._eventComponent.rerender();
     this._mode = Mode.DEFAULT;
+  }
+
+  destroy() {
+    remove(this._eventEditComponent);
+    remove(this._eventComponent);
+    document.removeEventListener(`keydown`, this._onEscKeyDown);
   }
 }
 
