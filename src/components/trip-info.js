@@ -1,6 +1,5 @@
-import moment from 'moment';
 import AbstractComponent from './abstract-component';
-
+import moment from 'moment';
 
 const ROUTE_INFO_LENGTH = 3;
 
@@ -66,6 +65,20 @@ class TripInfo extends AbstractComponent {
 
   removeElement() {
     this._element = null;
+  }
+
+  setPoints(points) {
+    this._points = points;
+  }
+
+  rerender() {
+    const oldElement = this.getElement();
+
+    this.removeElement();
+
+    const newElement = this.getElement();
+
+    oldElement.replaceWith(newElement);
   }
 }
 
