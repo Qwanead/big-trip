@@ -1,30 +1,58 @@
 import {RenderPosition, render} from './utils/render';
 
+import API from "./api.js";
 import EventsComponent from './components/events';
-import {FILTERS} from './mocks/filters';
-import FilterComponent from './components/filter';
+import FilterController from './controllers/filters-controller';
 import {MENU_ITEMS} from './mocks/menu';
 import MenuComponent from './components/menu';
-import TripController from './controllers/trip';
+import NewEventButtonComponent from './components/new-event-button';
+import PointsModel from './models/points-model';
+import TripController from './controllers/trip-controller';
 import TripCostComponent from './components/trip-cost';
 import TripInfoComponent from './components/trip-info';
-import {getPointsMock} from './mocks/point';
 
-const EVENT_COUNT = 4;
+const AUTHORIZATION = `Basic eWnlckBwYfvbd29yZAo=`;
 
 const tripInfoElement = document.querySelector(`.trip-info`);
 const tripControlsElement = document.querySelector(`.trip-controls`);
 const menuHeaderElement = tripControlsElement.querySelector(`h2`);
 const eventsContainerElement = document.querySelector(`.page-main .page-body__container`);
-const points = getPointsMock(EVENT_COUNT).sort((a, b) => a.dateFrom - b.dateFrom);
+
+const api = new API(AUTHORIZATION);
 const eventsComponent = new EventsComponent();
+const newEventButtonComponent = new NewEventButtonComponent();
+const pointsModel = new PointsModel();
+const filterController = new FilterController(tripControlsElement, pointsModel);
+let allOffers = [];
+let destinations = [];
 
-render(tripInfoElement, new TripInfoComponent(points), RenderPosition.AFTERBEGIN);
-render(tripInfoElement, new TripCostComponent(points), RenderPosition.BEFOREEND);
 render(menuHeaderElement, new MenuComponent(MENU_ITEMS), RenderPosition.AFTER);
-render(tripControlsElement, new FilterComponent(FILTERS), RenderPosition.BEFOREEND);
-render(eventsContainerElement, eventsComponent, RenderPosition.BEFOREEND);
+render(tripControlsElement, newEventButtonComponent, RenderPosition.AFTER);
 
-const tripComponent = new TripController(eventsComponent);
 
-tripComponent.render(points);
+api.getOffers()
+  .then((response) => {
+    allOffers = response;
+  })
+  .then(() => {
+    api.getDestinations()
+    .then((response) => {
+      destinations = response;
+    })
+    .then(() => api.getTasks(allOffers, destinations))
+    .then((points) => {
+      eventsContainerElement.innerHTML = ``;
+      render(eventsContainerElement, eventsComponent, RenderPosition.BEFOREEND);
+
+      pointsModel.setPoints(points);
+
+      const tripInfoComponent = new TripInfoComponent(pointsModel.getAllPoints());
+      const tripCostComponent = new TripCostComponent(pointsModel.getAllPoints());
+      const tripController = new TripController(eventsComponent, pointsModel, tripInfoComponent, tripCostComponent, newEventButtonComponent, filterController);
+
+      filterController.render();
+      render(tripInfoElement, tripInfoComponent, RenderPosition.AFTERBEGIN);
+      render(tripInfoElement, tripCostComponent, RenderPosition.BEFOREEND);
+      tripController.render();
+    });
+  });

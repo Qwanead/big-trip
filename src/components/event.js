@@ -1,7 +1,7 @@
-import moment from 'moment';
-import {formatCase, formatNumber, generateTemplates} from '../utils/common';
-import {POINT_ACTIVITYS} from '../const';
+import {formatCase, formatNumber, generateTemplates, isActivitys} from '../utils/common';
+
 import AbstractSmartComponent from './abstract-smart-component';
+import moment from 'moment';
 
 const MINUTES_IN_HOUR = 60;
 const HOURS_IN_DAY = 24;
@@ -45,7 +45,7 @@ const getOffersListTemplate = (offersChecked) => {
   let offersCheckedShort = [];
 
   if (offersChecked.length > OFFERS_COUNT) {
-    offersCheckedShort = offersChecked.slice(OFFERS_COUNT - 1);
+    offersCheckedShort = offersChecked.slice(0, OFFERS_COUNT);
   } else {
     offersCheckedShort = offersChecked;
   }
@@ -54,8 +54,6 @@ const getOffersListTemplate = (offersChecked) => {
 
   return getOffersTemplates(offersCheckedShort);
 };
-
-const isActivitys = (eventType) => POINT_ACTIVITYS.some((activity) => activity === eventType);
 
 const createEventTemplate = ({type, destination, dateFrom, dateTo, basePrice, offers}) => {
   const offersChecked = offers.filter((offer) => offer.isChecked);

@@ -30,6 +30,20 @@ class TripCost extends AbstractComponent {
   getTemplate() {
     return createTripCostTemplate(this._points);
   }
+
+  setPoints(points) {
+    this._points = points;
+  }
+
+  rerender() {
+    const oldElement = this.getElement();
+
+    this.removeElement();
+
+    const newElement = this.getElement();
+
+    oldElement.replaceWith(newElement);
+  }
 }
 
 export default TripCost;

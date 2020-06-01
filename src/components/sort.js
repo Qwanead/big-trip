@@ -1,4 +1,5 @@
-import AbstractComponent from './abstract-component';
+// import AbstractComponent from './abstract-component';
+import AbstractSmartComponent from './abstract-smart-component';
 import {SortType} from '../const';
 
 const createSortTemplate = () => {
@@ -36,22 +37,28 @@ const createSortTemplate = () => {
   );
 };
 
-class Sort extends AbstractComponent {
+class Sort extends AbstractSmartComponent {
   constructor() {
     super();
 
     this._currentSortType = SortType.DEFAULT;
+    this._onSortTypeChange = null;
   }
 
   getTemplate() {
     return createSortTemplate();
   }
 
+  recoveryListeners() {
+    this.setOnSortTypeChange(this._onSortTypeChange);
+  }
+
   setOnSortTypeChange(onChange) {
+    this._onSortTypeChange = onChange;
+
     this.getElement().addEventListener(`change`, (evt) => {
-      const sortType = evt.target.value;
-      this._currentSortType = sortType;
-      onChange(sortType);
+      this._currentSortType = evt.target.value;
+      onChange(this._currentSortType);
     });
   }
 }
