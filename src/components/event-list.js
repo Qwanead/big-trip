@@ -25,7 +25,8 @@ const getDaysListTemplate = (points) => {
     DaySet.add(moment(point.dateFrom).format(`YYYY-MM-DD`))
   );
 
-  let days = Array.from(DaySet).sort((a, b) => a - b);
+  let days = Array.from(DaySet).sort((a, b) => getDaysDiff(a, b));
+
   const daysWithNumbers = [];
 
   days.forEach((day, index, arr) => {
@@ -88,6 +89,10 @@ class EventList extends AbstractSmartComponent {
     this._points = [];
 
     this.rerender();
+  }
+
+  getPlaceForNewPoint() {
+
   }
 }
 

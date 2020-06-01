@@ -5,6 +5,7 @@ import {POINT_ACTIVITYS, POINT_TYPES} from '../const';
 import {formatCase, generateTemplates, isActivitys} from '../utils/common';
 
 import AbstractSmartComponent from './abstract-smart-component';
+import {Mode} from "../controllers/point-controller";
 import flatpickr from 'flatpickr';
 
 const parseFormData = (formData, form, point, typePoint) => {
@@ -22,12 +23,17 @@ const parseFormData = (formData, form, point, typePoint) => {
   const type = typePoint;
   const destination = formData.get(`event-destination`);
   const destinationInfo = point.destinations.find((it) => it.name === destination);
-  const pictures = destinationInfo.pictures;
-  const description = destinationInfo.description;
+  let pictures = [];
+  let description = ``;
   const dateFrom = new Date(formData.get(`event-start-time`));
   const dateTo = new Date(formData.get(`event-end-time`));
   const basePrice = +formData.get(`event-price`);
   const offers = getOffers(offersElements);
+
+  if (destinationInfo) {
+    pictures = destinationInfo.pictures;
+    description = destinationInfo.description;
+  }
 
   return {type, destination, pictures, description, dateFrom, dateTo, basePrice, offers};
 };
@@ -69,9 +75,8 @@ const getOptionsList = generateTemplates(getOptionTemplate);
 const getOffersList = generateTemplates(getOfferTemplate);
 const getPicturesList = generateTemplates(getPictureTemplate);
 
-const createEventEditTemplate = (point, type, destination, offers, description, pictures) => {
+const createEventEditTemplate = (point, type, destination, offers, description, pictures, mode) => {
   const {destinations, basePrice, dateFrom, dateTo, isFavorite} = point;
-  // const {type} = option;
   const destinationsNames = destinations.map((it) => it.name);
 
   const offersList = getOffersList(offers);
@@ -133,7 +138,8 @@ const createEventEditTemplate = (point, type, destination, offers, description, 
         </div>
 
         <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
-        <button class="event__reset-btn" type="reset">Delete</button>
+        <button class="event__reset-btn" type="reset">${mode === Mode.DEFAULT ? `Delete` : `Cancel`}</button>
+        ${mode === Mode.ADDING ? `` : `
         <input id="event-favorite-1"
           class="event__favorite-checkbox
           visually-hidden"
@@ -145,15 +151,16 @@ const createEventEditTemplate = (point, type, destination, offers, description, 
           <svg class="event__favorite-icon" width="28" height="28" viewBox="0 0 28 28">
             <path d="M14 21l-8.22899 4.3262 1.57159-9.1631L.685209 9.67376 9.8855 8.33688 14 0l4.1145 8.33688 9.2003 1.33688-6.6574 6.48934 1.5716 9.1631L14 21z"/>
           </svg>
-        </label>
+        </label>`}
 
+        ${mode === Mode.ADDING ? `` : `
         <button class="event__rollup-btn" type="button">
           <span class="visually-hidden">Open event</span>
-        </button>
+        </button>`}
       </header>
       <section class="event__details">
 
-        <section class="event__section  event__section--offers">
+        <section class="event__section  event__section--offers ${offersList.length ? `` : `visually-hidden`}">
           <h3 class="event__section-title  event__section-title--offers">Offers</h3>
 
           <div class="event__available-offers">
@@ -161,7 +168,7 @@ const createEventEditTemplate = (point, type, destination, offers, description, 
           </div>
         </section>
 
-        <section class="event__section  event__section--destination">
+        <section class="event__section  event__section--destination ${description === `` ? `visually-hidden` : ``}">
           <h3 class="event__section-title  event__section-title--destination">Destination</h3>
           <p class="event__destination-description">${description}</p>
 
@@ -177,8 +184,9 @@ const createEventEditTemplate = (point, type, destination, offers, description, 
 };
 
 class EventEdit extends AbstractSmartComponent {
-  constructor(point) {
+  constructor(point, mode = Mode.DEFAULT) {
     super();
+    this._mode = mode;
     this._point = point;
     this._type = point.type;
     this._destination = point.destination;
@@ -198,7 +206,7 @@ class EventEdit extends AbstractSmartComponent {
   }
 
   getTemplate() {
-    return createEventEditTemplate(this._point, this._type, this._destination, this._offers, this._description, this._pictures);
+    return createEventEditTemplate(this._point, this._type, this._destination, this._offers, this._description, this._pictures, this._mode);
   }
 
   recoveryListeners() {
@@ -222,6 +230,10 @@ class EventEdit extends AbstractSmartComponent {
   }
 
   setOnFavoriteButtonClick(onClick) {
+    if (this._mode === Mode.ADDING) {
+      return;
+    }
+
     const favoriteButtonElement = this.getElement().querySelector(`.event__favorite-btn`);
     this._onFavoriteButtonClick = onClick;
     favoriteButtonElement.addEventListener(`click`, this._onFavoriteButtonClick);
@@ -234,9 +246,10 @@ class EventEdit extends AbstractSmartComponent {
   }
 
   setOnEditCloseButtonClick(onClick) {
-    // if (this._mode === `adding`) {
-    //   return;
-    // }
+    if (this._mode === Mode.ADDING) {
+      return;
+    }
+
     this._onCloseClick = onClick;
     this.getElement().querySelector(`.event__rollup-btn`)
       .addEventListener(`click`, this._onCloseClick);

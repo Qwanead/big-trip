@@ -12,6 +12,53 @@ const KeyboardKey = {
 const Mode = {
   DEFAULT: `default`,
   EDIT: `edit`,
+  ADDING: `adding`,
+};
+
+const POINT_INIT_PARAMS = {
+  type: `taxi`,
+  offers: [
+    {
+      title: `Upgrade to a business class`,
+      price: 110,
+      shortTitle: `upgrade-to-a-business-class`,
+    },
+    {
+      title: `Choose the radio station`,
+      price: 150,
+      shortTitle: `choose-the-radio-station`,
+    },
+    {
+      title: `Choose temperature`,
+      price: 160,
+      shortTitle: `choose-temperature`,
+    },
+    {
+      title: `Drive quickly, I'm in a hurry`,
+      price: 30,
+      shortTitle: `drive-quickly-I'm-in-a-hurry`,
+    },
+    {
+      title: `Drive slowly`,
+      price: 90,
+      shortTitle: `drive-slowly`,
+    }
+  ]
+};
+
+const EmptyPoint = {
+  id: String(new Date() + Math.random()),
+  type: POINT_INIT_PARAMS.type,
+  destination: ``,
+  pictures: [],
+  dateFrom: new Date(),
+  dateTo: new Date(),
+  basePrice: ``,
+  allOffers: [],
+  description: ``,
+  offers: POINT_INIT_PARAMS.offers,
+  isFavorite: false,
+  destinations: [],
 };
 
 const isEscKey = ({key}) =>
@@ -30,8 +77,10 @@ class PointController {
     this._onDocumentKeyDown = this._onDocumentKeyDown.bind(this);
   }
 
-  render(point) {
-    if (this._containerElement) {
+  render(point, mode = Mode.DEFAULT) {
+    this._mode = mode;
+
+    if (this._containerElement && mode === Mode.DEFAULT) {
       const dayContainerElement = this._containerElement.querySelector(`.trip-events__list[date-time="${moment(point.dateFrom).format(`YYYY-MM-DD`)}"]`);
       if (dayContainerElement) {
         this._containerElement = dayContainerElement;
@@ -44,7 +93,7 @@ class PointController {
     const oldEventEditComponent = this._eventEditComponent;
 
     this._eventComponent = new EventComponent(point);
-    this._eventEditComponent = new EventEdit(point);
+    this._eventEditComponent = new EventEdit(point, mode);
 
     const onRollupButtonClick = () => {
       this._replaceEventToEdit();
@@ -55,7 +104,13 @@ class PointController {
     const onFormSubmit = (evt) => {
       evt.preventDefault();
       const newData = this._eventEditComponent.getData();
-      this._onDataChange(this, point, Object.assign({}, point, newData));
+
+      if (this._mode === Mode.ADDING) {
+        this._onDataChange(this, null, Object.assign({}, point, newData));
+      } else {
+        this._onDataChange(this, point, Object.assign({}, point, newData));
+      }
+
       document.removeEventListener(`keydown`, this._onDocumentKeyDown);
       this._eventEditComponent.getData();
       this._replaceEditToEvent();
@@ -79,7 +134,15 @@ class PointController {
     );
 
     if ((oldEventComponent === null) || (oldEventEditComponent === null)) {
-      render(this._containerElement, this._eventComponent, RenderPosition.BEFOREEND);
+      if (mode === Mode.ADDING) {
+        render(this._containerElement, this._eventEditComponent, RenderPosition.AFTERBEGIN);
+
+        document.addEventListener(`keydown`, this._onDocumentKeyDown);
+      } else {
+        render(this._containerElement, this._eventComponent, RenderPosition.BEFOREEND);
+      }
+
+
     } else {
       replace(this._eventComponent, oldEventComponent);
       replace(this._eventEditComponent, oldEventEditComponent);
@@ -88,6 +151,10 @@ class PointController {
 
   _onDocumentKeyDown(evt) {
     if (isEscKey(evt)) {
+      if (this._mode === Mode.ADDING) {
+        this._onDataChange(this, EmptyPoint, null);
+      }
+
       this._replaceEditToEvent();
       document.removeEventListener(`keydown`, this._onDocumentKeyDown);
     }
@@ -120,3 +187,4 @@ class PointController {
 }
 
 export default PointController;
+export {Mode, EmptyPoint};

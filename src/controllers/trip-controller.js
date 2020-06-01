@@ -1,9 +1,9 @@
 import {FilterType, SortType} from '../const';
+import PointController, {EmptyPoint, Mode as PointControllerMode} from './point-controller';
 import {RenderPosition, remove, render} from '../utils/render';
 
 import EventListComponent from '../components/event-list';
 import NoPointsComponent from '../components/no-points';
-import PointController from './point-controller';
 import SortComponent from '../components/sort';
 
 const renderEvents = (eventsListElement, points, onDataChange, onViewChange) => {
@@ -20,6 +20,7 @@ class TripController {
     this._renderedEvents = [];
     this._container = container;
     this._pointsModel = pointsModel;
+    this._creatingPoint = null;
 
     this._noPointsComponent = new NoPointsComponent();
     this._sortComponent = new SortComponent();
@@ -39,8 +40,6 @@ class TripController {
     this._pointsModel.setFilterChangeHandler(this._onFilterChange);
     this._sortComponent.setOnSortTypeChange(this._onSortingFormChange);
 
-    // this._newEventButtonComponent.setOnNewEventButtonClick(() => console.log(`click`));
-
     this._pointsModel.setDataChangeHandler(this._onTravelInfoChange);
     this._pointsModel.setDataChangeHandler(this._onTravelCostChange);
 
@@ -48,8 +47,8 @@ class TripController {
       this._filterController.setDefault();
       this._pointsModel.setFilter(FilterType.EVERYTHING);
       this._onViewChange();
-      // this._createPoint();
-      // this._newEventComponent.setDisabled();
+      this._createPoint();
+      this._newEventButtonComponent.setDisabled();
     });
   }
 
@@ -73,12 +72,33 @@ class TripController {
     this._renderedEvents = renderEvents(eventsListElement, points, this._onDataChange, this._onViewChange);
   }
 
+  _createPoint() {
+    if (this._creatingPoint) {
+      return;
+    }
+
+    if (this._pointsModel.getAllPoints().length === 0) {
+      const containerElement = this._container.getElement();
+      this._eventListComponent = new EventListComponent([]);
+      render(containerElement, this._sortComponent, RenderPosition.BEFOREEND);
+      render(containerElement, this._eventListComponent, RenderPosition.BEFOREEND);
+      remove(this._noPointsComponent);
+      this._creatingPoint = new PointController(this._eventListComponent.getElement(), this._onDataChange, this._onViewChange);
+      this._creatingPoint.render(Object.assign({}, EmptyPoint, this._pointsModel.getAdditionalInfo()), PointControllerMode.ADDING);
+    } else {
+      this._creatingPoint = new PointController(this._eventListComponent.getElement(), this._onDataChange, this._onViewChange);
+      this._creatingPoint.render(Object.assign({}, EmptyPoint, this._pointsModel.getAdditionalInfo()), PointControllerMode.ADDING);
+    }
+  }
+
 
   _setOnNewEventButtonClick(onClick) {
     this._newEventButtonComponent.setOnNewEventButtonClick(onClick);
   }
 
   _onSortingFormChange(sortType) {
+    this._newEventButtonComponent.setEnabled();
+
     let sortedPoints = [];
     const points = this._pointsModel.getPoints();
 
@@ -107,20 +127,42 @@ class TripController {
   }
 
   _onDataChange(pointController, oldData, newData) {
-    if (newData === null) {
-      this._pointsModel.removePoint(oldData.id);
+    this._newEventButtonComponent.setEnabled();
+
+    // новая точка
+    if (oldData === null) {
+      this._newEventButtonComponent.setEnabled();
+      this._creatingPoint = null;
+      // удаление новой
+      if (newData === null) {
+        pointController.destroy();
+        this._newEventButtonComponent.setEnabled();
+      // создание новой
+      } else {
+        this._pointsModel.addPoint(newData);
+        pointController.render(newData, PointControllerMode.DEFAULT);
+        this._renderedEvents = [].concat(pointController, this._renderedEvents);
+      }
       this._updatePoints();
+    // удаление старой
     } else {
-      const isSuccess = this._pointsModel.updatePoint(oldData.id, newData);
-      if (isSuccess) {
-        pointController.render(newData);
+      if (newData === null) {
+        this._pointsModel.removePoint(oldData.id);
+        this._updatePoints();
+      // редактирование старой
+      } else {
+        const isSuccess = this._pointsModel.updatePoint(oldData.id, newData);
+        if (isSuccess) {
+          pointController.render(newData);
+        }
       }
     }
   }
 
   _onFilterChange() {
+    this._newEventButtonComponent.setEnabled();
     this._updatePoints();
-    // this._newEventComponent.setEnabled();
+    this._newEventButtonComponent.setEnabled();
   }
 
   _onTravelCostChange() {
@@ -147,7 +189,13 @@ class TripController {
   }
 
   _onViewChange() {
+    if (this._creatingPoint) {
+      this._creatingPoint.destroy();
+      this._creatingPoint = null;
+      this._newEventButtonComponent.setEnabled();
+    }
     this._renderedEvents.forEach((it) => it.setDefaultView());
+    this._newEventButtonComponent.setEnabled();
   }
 }
 

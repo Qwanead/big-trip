@@ -29,6 +29,7 @@ class Points {
     this._dataChangeHandlers = [];
     this._filterChangeHandlers = [];
     this._activeFilter = FilterType.EVERYTHING;
+    this._additionalInfo = {};
   }
 
   getPoints() {
@@ -41,7 +42,18 @@ class Points {
 
   setPoints(points) {
     this._points = Array.from(points);
-    this._callHandlers(this._dataChangeHandlers);
+
+    if (this._points.length) {
+      this._additionalInfo = {
+        destinations: points[0].destinations,
+        allOffers: points[0].allOffers,
+      };
+      this._callHandlers(this._dataChangeHandlers);
+    }
+  }
+
+  getAdditionalInfo() {
+    return this._additionalInfo;
   }
 
   setFilter(filterType) {
