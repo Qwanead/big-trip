@@ -1,7 +1,7 @@
 # Личный проект «Большое путешествие» [![Build status][travis-image]][travis-url]
 
-* Студент: [Антон Рассадников](https://up.htmlacademy.ru/ecmascript/10/user/973785).
-* Наставник: [Александр Мастеров](https://up.htmlacademy.ru/ecmascript/10/user/912463).
+* Студент: [Антон Рассадников](https://up.htmlacademy.ru/ecmascript/11/user/973785).
+* Наставник: ---.
 
 ---
 
