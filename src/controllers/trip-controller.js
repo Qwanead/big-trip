@@ -37,11 +37,11 @@ class TripController {
     this._onTravelCostChange = this._onTravelCostChange.bind(this);
     this._onTravelInfoChange = this._onTravelInfoChange.bind(this);
 
-    this._pointsModel.setFilterChangeHandler(this._onFilterChange);
+    this._pointsModel.setOnFilterChange(this._onFilterChange);
     this._sortComponent.setOnSortTypeChange(this._onSortingFormChange);
 
-    this._pointsModel.setDataChangeHandler(this._onTravelInfoChange);
-    this._pointsModel.setDataChangeHandler(this._onTravelCostChange);
+    this._pointsModel.setOnDataChange(this._onTravelInfoChange);
+    this._pointsModel.setOnDataChange(this._onTravelCostChange);
 
     this._setOnNewEventButtonClick(() => {
       this._filterController.setDefault();
@@ -56,7 +56,7 @@ class TripController {
     const points = this._pointsModel.getPoints();
     const containerElement = this._container.getElement();
     this._eventListComponent = new EventListComponent(points);
-    containerElement.innerHTML = ``;
+    // containerElement.innerHTML = ``;
 
 
     if (points.length === 0) {
@@ -182,7 +182,7 @@ class TripController {
 
   _updatePoints() {
     this._removePoints();
-    this._container.innerHTML = ``;
+    // this._container.innerHTML = ``;
     remove(this._eventListComponent);
     this._sortComponent.rerender();
     this.render();
@@ -196,6 +196,14 @@ class TripController {
     }
     this._renderedEvents.forEach((it) => it.setDefaultView());
     this._newEventButtonComponent.setEnabled();
+  }
+
+  hide() {
+    this._container.getElement().classList.add(`visually-hidden`);
+  }
+
+  show() {
+    this._container.getElement().classList.remove(`visually-hidden`);
   }
 }
 
