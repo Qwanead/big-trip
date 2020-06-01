@@ -95,12 +95,12 @@ class Points {
     return true;
   }
 
-  setDataChangeHandler(handler) {
-    this._dataChangeHandlers.push(handler);
+  setOnDataChange(onChange) {
+    this._dataChangeHandlers.push(onChange);
   }
 
-  setFilterChangeHandler(handler) {
-    this._filterChangeHandlers.push(handler);
+  setOnFilterChange(onChange) {
+    this._filterChangeHandlers.push(onChange);
   }
 
   getActiveFilterType() {

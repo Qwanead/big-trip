@@ -1,18 +1,8 @@
 import AbstractComponent from './abstract-component';
-
-const calculateEventPrice = (basePrice, offers) => {
-  const offersChecked = offers.filter((offer) => offer.isChecked);
-  const offersPrice = offersChecked.reduce((result, offer) => offer.price + result, 0);
-
-  return offersPrice + basePrice;
-};
-
-const calculateTripCost = (points) =>
-  points.reduce((result, point) =>
-    result + calculateEventPrice(point.basePrice, point.offers), 0);
+import {calculateTotalCost} from '../utils/common';
 
 const createTripCostTemplate = (points) => {
-  const tripCost = calculateTripCost(points);
+  const tripCost = calculateTotalCost(points);
 
   return (
     `<p class="trip-info__cost">
