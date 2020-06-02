@@ -1,7 +1,8 @@
+import {calculateTotalCost, isActivitys} from '../utils/common';
+
 import AbstractSmartComponent from "./abstract-smart-component";
 import Chart from "chart.js";
 import ChartDataLabels from 'chartjs-plugin-datalabels';
-import {isActivitys, calculateTotalCost} from '../utils/common';
 
 const BAR_HEIGHT = 55;
 
@@ -19,7 +20,7 @@ const EmojiMap = {
 };
 
 const getAllDifferentTypes = (points) => {
-  let defferentTypes = [];
+  const defferentTypes = [];
   for (const point of points) {
     if (!defferentTypes.some((it) => it === point.type)) {
       defferentTypes.push(point.type);

@@ -25,7 +25,7 @@ const getDaysListTemplate = (points) => {
     DaySet.add(moment(point.dateFrom).format(`YYYY-MM-DD`))
   );
 
-  let days = Array.from(DaySet).sort((a, b) => getDaysDiff(a, b));
+  const days = Array.from(DaySet).sort((a, b) => getDaysDiff(a, b));
 
   const daysWithNumbers = [];
 
