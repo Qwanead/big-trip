@@ -113,6 +113,14 @@ class Event extends AbstractSmartComponent {
     this.getElement().querySelector(`.event__rollup-btn`)
       .addEventListener(`click`, onClick);
   }
+
+  disableEditButton() {
+    this.getElement().querySelector(`.event__rollup-btn`).disabled = true;
+  }
+
+  enableEditButton() {
+    this.getElement().querySelector(`.event__rollup-btn`).disabled = false;
+  }
 }
 
 export default Event;

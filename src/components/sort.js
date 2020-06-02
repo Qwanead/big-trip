@@ -1,4 +1,3 @@
-// import AbstractComponent from './abstract-component';
 import AbstractSmartComponent from './abstract-smart-component';
 import {SortType} from '../const';
 

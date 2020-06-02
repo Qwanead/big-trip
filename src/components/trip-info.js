@@ -56,7 +56,7 @@ const createTripInfoTemplate = (points) => {
 class TripInfo extends AbstractComponent {
   constructor(points) {
     super();
-    this._points = points;
+    this._points = points.sort((a, b) => a.dateFrom.getTime() - b.dateFrom.getTime());
   }
 
   getTemplate() {
@@ -68,7 +68,7 @@ class TripInfo extends AbstractComponent {
   }
 
   setPoints(points) {
-    this._points = points;
+    this._points = points.sort((a, b) => a.dateFrom.getTime() - b.dateFrom.getTime());
   }
 
   rerender() {

@@ -2,21 +2,6 @@ import {formatCase, generateTemplates} from '../utils/common';
 
 import AbstractComponent from './abstract-component';
 
-// const FILTERS = [
-//   {
-//     title: `everything`,
-//     isChecked: true,
-//   },
-//   {
-//     title: `future`,
-//     isChecked: false,
-//   },
-//   {
-//     title: `past`,
-//     isChecked: false,
-//   },
-// ];
-
 const FILTER_ID_PREFIX = `filter-`;
 
 const getFilterNameById = (id) => {

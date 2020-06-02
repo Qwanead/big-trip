@@ -1,40 +1,17 @@
-const formatString = (str) => str.replace(/ /g, `-`).toLowerCase();
-
-const convertOffers = (type, offersChecked, allOffers) => {
-  const resultOffers = allOffers.filter((it) => it.type === type)[0].offers.slice();
-  for (let i = 0; i < resultOffers.length; i++) {
-    resultOffers[i] = Object.assign({}, resultOffers[i]);
+const offerstoRAW = (offers) => {
+  if (offers.length > 0 && offers[0].hasOwnProperty(`isChecked`)) {
+    return offers
+      .filter((offer) => offer.isChecked)
+      .map((offer) => ({
+        title: offer.title,
+        price: offer.price,
+      }));
   }
 
-  resultOffers.forEach((resultOffer) => {
-    resultOffer.shortTitle = formatString(resultOffer.title);
-    resultOffer.isChecked = false;
-
-    offersChecked.some((offerChecked) => {
-      if (offerChecked.title === resultOffer.title) {
-        resultOffer.price = offerChecked.price;
-        resultOffer.isChecked = true;
-
-        return true;
-      }
-
-      return false;
-    });
-  });
-
-  return resultOffers;
+  return offers;
 };
-
-const addShortTitle = (allOffers) => {
-  allOffers.forEach((allOffer) => {
-    allOffer.offers.forEach((offer) => {
-      offer.shortTitle = formatString(offer.title);
-    });
-  });
-};
-
 class Point {
-  constructor(pointData, allOffers, destinations) {
+  constructor(pointData) {
     this.id = pointData.id;
     this.type = pointData.type;
     this.destination = pointData.destination.name;
@@ -44,13 +21,9 @@ class Point {
     this.dateTo = new Date(pointData.date_to);
     this.basePrice = pointData.base_price;
     this.offersChecked = pointData.offers;
-    this.allOffers = allOffers;
-    this.offers = convertOffers(pointData.type, pointData.offers, allOffers);
+    this.offers = pointData.offers;
     this.isFavorite = Boolean(pointData.is_favorite);
     this.duration = this.dateFrom - this.dateTo;
-    this.destinations = destinations;
-
-    addShortTitle(this.allOffers);
   }
 
   static parsePoint(pointData, allOffers, destinations) {
@@ -59,6 +32,27 @@ class Point {
 
   static parsePoints({response: PointsData, allOffers, destinations}) {
     return PointsData.map((it) => Point.parsePoint(it, allOffers, destinations));
+  }
+
+  toRAW() {
+    return {
+      "base_price": this.basePrice,
+      "date_from": this.dateFrom.toISOString(),
+      "date_to": this.dateTo.toISOString(),
+      "destination": {
+        "description": this.description,
+        "name": this.destination,
+        "pictures": this.pictures,
+      },
+      "id": this.id,
+      "is_favorite": this.isFavorite,
+      "offers": offerstoRAW(this.offers),
+      "type": this.type,
+    };
+  }
+
+  static clone(data) {
+    return new Point(data.toRAW());
   }
 }
 
