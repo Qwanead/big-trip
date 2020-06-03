@@ -31,7 +31,7 @@ class Point {
   }
 
   static parsePoints({response: PointsData, allOffers, destinations}) {
-    return PointsData.map((it) => Point.parsePoint(it, allOffers, destinations));
+    return PointsData.map((PointData) => Point.parsePoint(PointData, allOffers, destinations));
   }
 
   toRAW() {

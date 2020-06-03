@@ -58,7 +58,7 @@ const getPicturesList = generateTemplates(getPictureTemplate);
 
 const createEventEditTemplate = (point, type, destination, offers, description, pictures, mode) => {
   const {destinations, basePrice, dateFrom, dateTo, isFavorite} = point;
-  const destinationsNames = destinations.map((it) => it.name);
+  const destinationsNames = destinations.map((destinationItem) => destinationItem.name);
 
   const offersList = getOffersList(offers);
   const picturesList = getPicturesList(pictures);
@@ -391,20 +391,20 @@ class EventEdit extends AbstractSmartComponent {
   }
 
   blockForm() {
-    this.getElement().querySelectorAll(`button`).forEach((it) => {
-      it.disabled = true;
+    this.getElement().querySelectorAll(`button`).forEach((element) => {
+      element.disabled = true;
     });
-    this.getElement().querySelectorAll(`input`).forEach((it) => {
-      it.disabled = true;
+    this.getElement().querySelectorAll(`input`).forEach((element) => {
+      element.disabled = true;
     });
   }
 
   unblockForm() {
-    this.getElement().querySelectorAll(`button`).forEach((it) => {
-      it.disabled = false;
+    this.getElement().querySelectorAll(`button`).forEach((element) => {
+      element.disabled = false;
     });
-    this.getElement().querySelectorAll(`input`).forEach((it) => {
-      it.disabled = false;
+    this.getElement().querySelectorAll(`input`).forEach((element) => {
+      element.disabled = false;
     });
   }
 }

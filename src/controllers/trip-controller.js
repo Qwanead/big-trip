@@ -233,7 +233,7 @@ class TripController {
       this._creatingPoint = null;
       this._newEventButtonComponent.setEnabled();
     }
-    this._renderedEvents.forEach((it) => it.setDefaultView());
+    this._renderedEvents.forEach((renderedEvent) => renderedEvent.setDefaultView());
     this._newEventButtonComponent.setEnabled();
   }
 
@@ -254,11 +254,11 @@ class TripController {
   }
 
   _startInteractionWithApplication() {
-    this._renderedEvents.forEach((it) => it.unblockInterface());
+    this._renderedEvents.forEach((renderedEvent) => renderedEvent.unblockInterface());
     this._newEventButtonComponent.setEnabled();
   }
   _stopInteractionWithApplication() {
-    this._renderedEvents.forEach((it) => it.blockInterface());
+    this._renderedEvents.forEach((renderedEvent) => renderedEvent.blockInterface());
     this._newEventButtonComponent.setDisabled();
   }
 }

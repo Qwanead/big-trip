@@ -62,7 +62,7 @@ const parseFormData = (formData, form, point, typePoint) => {
 
   const type = typePoint;
   const destination = formData.get(`event-destination`);
-  const destinationInfo = point.destinations.find((it) => it.name === destination);
+  const destinationInfo = point.destinations.find((destinationItem) => destinationItem.name === destination);
   let pictures = [];
   let description = ``;
   const dateFrom = new Date(formData.get(`event-start-time`));
@@ -115,9 +115,10 @@ const convertOffers = (type, offersChecked, allOffers) => {
     return offersChecked;
   }
 
-  const resultOffers = allOffers.filter((it) => it.type === type)[0].offers.slice();
-  for (let i = 0; i < resultOffers.length; i++) {
-    resultOffers[i] = Object.assign({}, resultOffers[i]);
+  const resultOffers = allOffers.filter((offer) => offer.type === type)[0].offers.slice();
+
+  for (let offer of resultOffers) {
+    offer = Object.assign({}, offer);
   }
 
   resultOffers.forEach((resultOffer) => {

@@ -24,6 +24,6 @@ const calculateTotalCost = (points) => {
 
 
 const generateTemplates = (getTemplate) =>
-  (arr) => arr.reduce((result, it) => result + getTemplate(it), ``);
+  (arr) => arr.reduce((result, item) => result + getTemplate(item), ``);
 
 export {isActivitys, formatCase, formatNumber, calculateTotalCost, generateTemplates, formatString};

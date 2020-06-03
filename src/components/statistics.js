@@ -22,7 +22,7 @@ const EmojiMap = {
 const getAllDifferentTypes = (points) => {
   const defferentTypes = [];
   for (const point of points) {
-    if (!defferentTypes.some((it) => it === point.type)) {
+    if (!defferentTypes.some((type) => type === point.type)) {
       defferentTypes.push(point.type);
     }
   }
@@ -50,9 +50,9 @@ const getTotalCountOfType = (points, type) => {
 };
 
 const sortMoneyInfo = (allDifferentTypes, totalPrices) => {
-  const moneyInfo = allDifferentTypes.map((it, index) => {
+  const moneyInfo = allDifferentTypes.map((typeItem, index) => {
     return {
-      type: it,
+      type: typeItem,
       totalCost: totalPrices[index],
     };
   });
@@ -61,9 +61,9 @@ const sortMoneyInfo = (allDifferentTypes, totalPrices) => {
 };
 
 const sortTransportInfo = (allDifferentTypes, totalCount) => {
-  const transportInfo = allDifferentTypes.map((it, index) => {
+  const transportInfo = allDifferentTypes.map((typeItem, index) => {
     return {
-      type: it,
+      type: typeItem,
       count: totalCount[index],
     };
   });
@@ -78,18 +78,18 @@ const renderMoneyChart = (moneyCtx, points) => {
     totalPrices.push(getTotalCostOfType(points, type));
   }
   const sortedMoneyInfo = sortMoneyInfo(allDifferentTypes, totalPrices);
-  const sortedPrices = sortedMoneyInfo.map((it)=>{
-    return it.totalCost;
+  const sortedPrices = sortedMoneyInfo.map((info)=>{
+    return info.totalCost;
   });
-  const sortedTypes = sortedMoneyInfo.map((it)=>{
-    return it.type;
+  const sortedTypes = sortedMoneyInfo.map((info)=>{
+    return info.type;
   });
 
-  const labels = sortedTypes.map((it)=>{
-    if (it === `check-in`) {
-      return `${EmojiMap[`check`]} ${it.toUpperCase()}`;
+  const labels = sortedTypes.map((type)=>{
+    if (type === `check-in`) {
+      return `${EmojiMap[`check`]} ${type.toUpperCase()}`;
     }
-    return `${EmojiMap[it]} ${it.toUpperCase()}`;
+    return `${EmojiMap[type]} ${type.toUpperCase()}`;
   });
 
   return new Chart(moneyCtx, {
@@ -165,18 +165,18 @@ const renderTransportChart = (transportCtx, points) => {
     totalCountPointsOfTypes.push(getTotalCountOfType(points, type));
   }
   const sortedTransportInfo = sortTransportInfo(allDifferentTypes, totalCountPointsOfTypes);
-  const sortedNumberOfRepetitions = sortedTransportInfo.map((it) => {
-    return it.count;
+  const sortedNumberOfRepetitions = sortedTransportInfo.map((info) => {
+    return info.count;
   });
-  const sortedTypes = sortedTransportInfo.map((it) => {
-    return it.type;
+  const sortedTypes = sortedTransportInfo.map((info) => {
+    return info.type;
   });
 
-  const labels = sortedTypes.map((it) => {
-    if (it === `check-in`) {
-      return `${EmojiMap[`check`]} ${it.toUpperCase()}`;
+  const labels = sortedTypes.map((type) => {
+    if (type === `check-in`) {
+      return `${EmojiMap[`check`]} ${type.toUpperCase()}`;
     }
-    return `${EmojiMap[it]} ${it.toUpperCase()}`;
+    return `${EmojiMap[type]} ${type.toUpperCase()}`;
   });
 
   return new Chart(transportCtx, {
@@ -248,15 +248,15 @@ const renderTransportChart = (transportCtx, points) => {
 const renderTimeChart = (timeCtx, points) => {
   points.sort((a, b) => ((b.dateTo - b.dateFrom) - (a.dateTo - a.dateFrom)));
 
-  const totalTimeSpend = points.map((it) => {
-    return it.dateTo - it.dateFrom;
+  const totalTimeSpend = points.map((pointItem) => {
+    return pointItem.dateTo - pointItem.dateFrom;
   });
 
-  const labels = points.map((it) => {
-    if (it.type === `check-in`) {
-      return `${EmojiMap[`check`]} ${it.type.toUpperCase()} ${it.destination.toUpperCase()}`;
+  const labels = points.map((pointItem) => {
+    if (pointItem.type === `check-in`) {
+      return `${EmojiMap[`check`]} ${pointItem.type.toUpperCase()} ${pointItem.destination.toUpperCase()}`;
     }
-    return `${EmojiMap[it.type]} ${it.type.toUpperCase()} ${isActivitys(it.type) ? `IN ` : `TO `}${it.destination.toUpperCase()}`;
+    return `${EmojiMap[pointItem.type]} ${pointItem.type.toUpperCase()} ${isActivitys(pointItem.type) ? `IN ` : `TO `}${pointItem.destination.toUpperCase()}`;
   });
 
   return new Chart(timeCtx, {
