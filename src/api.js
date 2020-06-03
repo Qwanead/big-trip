@@ -7,12 +7,17 @@ const Method = {
   DELETE: `DELETE`
 };
 
+const SuccessStatus = {
+  MIN: 200,
+  MAX: 300,
+};
+
 const checkStatus = (response) => {
-  if (response.status >= 200 && response.status < 300) {
+  if (response.status >= SuccessStatus.MIN && response.status < SuccessStatus.MAX) {
     return response;
-  } else {
-    throw new Error(`${response.status}: ${response.statusText}`);
   }
+
+  throw new Error(`${response.status}: ${response.statusText}`);
 };
 
 const API = class {
