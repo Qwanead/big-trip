@@ -23,6 +23,7 @@ class TripController {
     this._creatingPoint = null;
     this._destinations = [];
     this._allOffers = [];
+    this._sortType = SortType.DEFAULT;
 
     this._noPointsComponent = new NoPointsComponent();
     this._sortComponent = new SortComponent();
@@ -48,6 +49,7 @@ class TripController {
 
     this._setOnNewEventButtonClick(() => {
       this._filterController.setDefault();
+      this._setDefaultSorting();
       this._pointsModel.setFilter(FilterType.EVERYTHING);
       this._onViewChange();
       this._createPoint();
@@ -69,10 +71,7 @@ class TripController {
 
     render(containerElement, this._sortComponent, RenderPosition.BEFOREEND);
     render(containerElement, this._eventListComponent, RenderPosition.BEFOREEND);
-
-    const eventsListElement = containerElement.querySelector(`.trip-days`);
-
-    this._renderedEvents = renderEvents(eventsListElement, points, this._onDataChange, this._onViewChange, this._destinations, this._allOffers);
+    this._onSortingFormChange(this._sortType);
   }
 
   _createPoint() {
@@ -97,6 +96,7 @@ class TripController {
   }
 
   _onSortingFormChange(sortType) {
+    this._sortType = sortType;
     this._newEventButtonComponent.setEnabled();
 
     let sortedPoints = [];
@@ -176,10 +176,10 @@ class TripController {
         this._api.updatePoint(oldData.id, newData)
         .then((pointModel) => {
           const isSuccess = this._pointsModel.updatePoint(oldData.id, pointModel);
-
           if (isSuccess) {
             if (mode === PointControllerMode.DEFAULT) {
               this._updatePoints();
+              pointController.render(pointModel, mode);
             } else {
               pointController.render(pointModel, mode);
             }
@@ -217,10 +217,14 @@ class TripController {
     this._renderedEvents = [];
   }
 
+  _setDefaultSorting() {
+    this._sortType = SortType.DEFAULT;
+    this._sortComponent.rerender();
+  }
+
   _updatePoints() {
     this._removePoints();
     remove(this._eventListComponent);
-    this._sortComponent.rerender();
     this.render();
   }
 
@@ -234,8 +238,8 @@ class TripController {
     this._newEventButtonComponent.setEnabled();
   }
 
-  setDetinations(destination) {
-    this._destinations = destination;
+  setDetinations(destinations) {
+    this._destinations = destinations;
   }
 
   setAllOffers(allOffers) {
@@ -254,6 +258,7 @@ class TripController {
     this._renderedEvents.forEach((renderedEvent) => renderedEvent.unblockInterface());
     this._newEventButtonComponent.setEnabled();
   }
+
   _stopInteractionWithApplication() {
     this._renderedEvents.forEach((renderedEvent) => renderedEvent.blockInterface());
     this._newEventButtonComponent.setDisabled();

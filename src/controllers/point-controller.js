@@ -213,12 +213,10 @@ class PointController {
       };
 
       if (this._mode === Mode.ADDING) {
-        this._onDataChange(this, null, data, Mode.DEFAULT, onError);
-
+        this._onDataChange(this, null, data, Mode.ADDING, onError);
       } else {
         this._onDataChange(this, point, data, Mode.DEFAULT, onError);
       }
-
 
       document.removeEventListener(`keydown`, this._onDocumentKeyDown);
     };
@@ -263,8 +261,7 @@ class PointController {
       };
 
       this._onDataChange(this, point, newPoint, Mode.EDIT, onError);
-    }
-    );
+    });
 
     if ((oldEventComponent === null) || (oldEventEditComponent === null)) {
       if (mode === Mode.ADDING) {

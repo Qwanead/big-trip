@@ -119,7 +119,7 @@ const createEventEditTemplate = (point, type, destination, offers, description, 
         </div>
 
         <button class="event__save-btn  btn  btn--blue" type="submit"${destination === `` ? `disabled` : ``}>Save</button>
-        <button class="event__reset-btn" type="reset">${mode === Mode.DEFAULT ? `Delete` : `Cancel`}</button>
+        <button class="event__reset-btn" type="reset">${mode === Mode.ADDING ? `Cancel` : `Delete`}</button>
         ${mode === Mode.ADDING ? `` : `
         <input id="event-favorite-1"
           class="event__favorite-checkbox
