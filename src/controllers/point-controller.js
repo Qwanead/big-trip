@@ -269,17 +269,19 @@ class PointController {
     if ((oldEventComponent === null) || (oldEventEditComponent === null)) {
       if (mode === Mode.ADDING) {
         render(this._containerElement, this._eventEditComponent, RenderPosition.AFTERBEGIN);
-
+        this._hideEventDetails();
         document.addEventListener(`keydown`, this._onDocumentKeyDown);
       } else {
         render(this._containerElement, this._eventComponent, RenderPosition.BEFOREEND);
       }
-
-
     } else {
       replace(this._eventComponent, oldEventComponent);
       replace(this._eventEditComponent, oldEventEditComponent);
     }
+  }
+
+  _hideEventDetails() {
+    this._containerElement.querySelector(`.event__details`).classList.add(`visually-hidden`);
   }
 
   _onDocumentKeyDown(evt) {
