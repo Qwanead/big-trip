@@ -115,11 +115,8 @@ const convertOffers = (type, offersChecked, allOffers) => {
     return offersChecked;
   }
 
-  const resultOffers = allOffers.filter((offer) => offer.type === type)[0].offers.slice();
-
-  for (let offer of resultOffers) {
-    offer = Object.assign({}, offer);
-  }
+  const targetOffers = allOffers.filter((offer) => offer.type === type)[0].offers.slice();
+  const resultOffers = JSON.parse(JSON.stringify(targetOffers));
 
   resultOffers.forEach((resultOffer) => {
     resultOffer.shortTitle = formatString(resultOffer.title);
