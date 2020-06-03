@@ -174,6 +174,7 @@ class EventEdit extends AbstractSmartComponent {
     this._offers = point.offers;
     this._description = point.description;
     this._pictures = point.pictures;
+    this._destinationOld = this._destination;
 
     this._onFormSubmit = null;
     this._onFavoriteButtonClick = null;
@@ -242,6 +243,10 @@ class EventEdit extends AbstractSmartComponent {
     this._offers = this._point.offers;
 
     this.rerender();
+  }
+
+  resetDestination() {
+    this._destination = this._destinationOld;
   }
 
   getData() {

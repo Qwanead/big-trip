@@ -220,8 +220,8 @@ class PointController {
 
 
       document.removeEventListener(`keydown`, this._onDocumentKeyDown);
-      this._eventEditComponent.getData();
-      this._replaceEditToEvent();
+      // this._eventEditComponent.getData();
+      // this._replaceEditToEvent();
     };
 
     this._eventEditComponent.setOnDeleteButtonClick(() => {
@@ -242,6 +242,7 @@ class PointController {
     });
 
     this._eventEditComponent.setOnEditCloseButtonClick(() => {
+      this._eventEditComponent.resetDestination();
       this._replaceEditToEvent();
       document.removeEventListener(`keydown`, this._onDocumentKeyDown);
     });
