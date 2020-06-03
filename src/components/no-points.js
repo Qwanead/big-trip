@@ -6,10 +6,10 @@ const createNoPointsTemplate = () => {
   );
 };
 
-class noPoints extends AbstractComponent {
+class NoPoints extends AbstractComponent {
   getTemplate() {
     return createNoPointsTemplate();
   }
 }
 
-export default noPoints;
+export default NoPoints;

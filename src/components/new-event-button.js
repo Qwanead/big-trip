@@ -6,7 +6,7 @@ const createNewEventButtonTemplate = () => {
   );
 };
 
-class newEventButton extends AbstractComponent {
+class NewEventButton extends AbstractComponent {
   getTemplate() {
     return createNewEventButtonTemplate();
   }
@@ -24,4 +24,4 @@ class newEventButton extends AbstractComponent {
   }
 }
 
-export default newEventButton;
+export default NewEventButton;
