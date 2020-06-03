@@ -60,16 +60,18 @@ const parseFormData = (formData, form, point, typePoint) => {
         price: +offer.querySelector(`.event__offer-price`).textContent,
       }));
 
+  const formatDate = (date) => moment(date, `MMM-DD-YYYY HH:mm`).format();
+
   const type = typePoint;
   const destination = formData.get(`event-destination`);
   const destinationInfo = point.destinations.find((destinationItem) => destinationItem.name === destination);
   let pictures = [];
   let description = ``;
-  const dateFrom = new Date(formData.get(`event-start-time`));
-
-  const dateTo = new Date(formData.get(`event-end-time`));
+  const dateFrom = new Date(formatDate(formData.get(`event-start-time`)));
+  const dateTo = new Date(formatDate(formData.get(`event-end-time`)));
   const basePrice = +formData.get(`event-price`);
   const offers = getOffers(offersElements);
+
 
   if (destinationInfo) {
     pictures = destinationInfo.pictures;
@@ -204,10 +206,24 @@ class PointController {
         this._eventEditComponent.removeErrorStyle();
       }
 
+      const isValidDate = (date) => date
+        && Object.prototype.toString.call(date) === `[object Date]`
+        && !isNaN(date);
+
+      const isCorrectValues = (value) => isValidDate(value.dateFrom)
+        && isValidDate(value.dateTo)
+        && value.description;
+
       const onError = () => {
         this._eventEditComponent.removeNotificationAboutSaving();
         this._eventEditComponent.addErrorStyle();
       };
+
+      if (!isCorrectValues(data)) {
+        onError();
+        this.shake();
+        return;
+      }
 
       if (this._mode === Mode.ADDING) {
         this._onDataChange(this, null, data, Mode.ADDING, onError);

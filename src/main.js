@@ -11,7 +11,7 @@ import TripController from './controllers/trip-controller';
 import TripCostComponent from './components/trip-cost';
 import TripInfoComponent from './components/trip-info';
 
-const AUTHORIZATION = `Basic eWnlckBwYsv3f59yZAo=`;
+const AUTHORIZATION = `Basic eWslckBwYsv3f59yZAo=`;
 const END_POINT = `https://11.ecmascript.pages.academy/big-trip/`;
 const SiteTabs = {
   TABLE: `Table`,
