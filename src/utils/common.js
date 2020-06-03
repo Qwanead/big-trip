@@ -12,9 +12,7 @@ const formatNumber = (number) => number.toString().padStart(NUMBER_LENGTH, `0`);
 
 const calculateTotalCost = (points) => {
   const calculateEventPrice = (basePrice, offers) => {
-    const offersChecked = offers.filter((offer) => offer.isChecked);
-    const offersPrice = offersChecked.reduce((result, offer) => offer.price + result, 0);
-
+    const offersPrice = offers.reduce((result, offer) => offer.price + result, 0);
     return offersPrice + basePrice;
   };
 
