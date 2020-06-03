@@ -86,14 +86,11 @@ class TripController {
       render(containerElement, this._sortComponent, RenderPosition.BEFOREEND);
       render(containerElement, this._eventListComponent, RenderPosition.BEFOREEND);
       remove(this._noPointsComponent);
-      this._creatingPoint = new PointController(this._eventListComponent.getElement(), this._onDataChange, this._onViewChange, this._destinations, this._allOffers);
-      this._creatingPoint.render(Object.assign({}, EmptyPoint, this._pointsModel.getAdditionalInfo()), PointControllerMode.ADDING);
-    } else {
-      this._creatingPoint = new PointController(this._eventListComponent.getElement(), this._onDataChange, this._onViewChange, this._destinations, this._allOffers);
-      this._creatingPoint.render(Object.assign({}, EmptyPoint, this._pointsModel.getAdditionalInfo()), PointControllerMode.ADDING);
     }
-  }
 
+    this._creatingPoint = new PointController(this._eventListComponent.getElement(), this._onDataChange, this._onViewChange, this._destinations, this._allOffers);
+    this._creatingPoint.render(Object.assign({}, EmptyPoint, this._pointsModel.getAdditionalInfo()), PointControllerMode.ADDING);
+  }
 
   _setOnNewEventButtonClick(onClick) {
     this._newEventButtonComponent.setOnNewEventButtonClick(onClick);
