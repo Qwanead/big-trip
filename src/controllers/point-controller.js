@@ -221,8 +221,6 @@ class PointController {
 
 
       document.removeEventListener(`keydown`, this._onDocumentKeyDown);
-      // this._eventEditComponent.getData();
-      // this._replaceEditToEvent();
     };
 
     this._eventEditComponent.setOnDeleteButtonClick(() => {
@@ -287,7 +285,7 @@ class PointController {
   _onDocumentKeyDown(evt) {
     if (isEscKey(evt)) {
       if (this._mode === Mode.ADDING) {
-        this._onDataChange(this, EmptyPoint, null);
+        this._onDataChange(this, null, null);
       }
 
       this._replaceEditToEvent();
@@ -318,7 +316,7 @@ class PointController {
     this._eventEditComponent.removeFlatpickr();
     remove(this._eventEditComponent);
     remove(this._eventComponent);
-    document.removeEventListener(`keydown`, this._onEscKeyDown);
+    document.removeEventListener(`keydown`, this._onDocumentKeyDown);
   }
 
   shake() {
