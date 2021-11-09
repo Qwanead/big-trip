@@ -12,7 +12,7 @@ import TripCostComponent from './components/trip-cost';
 import TripInfoComponent from './components/trip-info';
 
 const AUTHORIZATION = `Basic eWslckBwYsv3f59yZAo=`;
-const END_POINT = `https://11.ecmascript.pages.academy/big-trip/`;
+const END_POINT = `https://15.ecmascript.pages.academy/big-trip/`;
 const SiteTabs = {
   TABLE: `Table`,
   STATS: `Stats`,
